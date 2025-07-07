@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Sora:wght@100..800&display=swap");
+@import "tailwindcss";
+@theme {
+  --font-Sora: "Sora", sans-serif;
+  --font-Manrope: "Manrope", sans-serif;
+}
+.active {
+  color: #d32f2f;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  backdrop-filter: blur;
+}
+@plugin "daisyui" {
+  themes: light --default;
+}
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #d32f2f;
+  --color-secondary: #111827;
+  --color-base-100: #f9fafb;
+  --color-base-200: #ffffff;
+}
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-primary: #d32f2f;
+  --color-secondary: #f9fafb;
+  --color-base-100: #111827;
+  --color-base-200: #182131;
+}
