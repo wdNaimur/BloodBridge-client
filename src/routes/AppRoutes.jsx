@@ -2,6 +2,8 @@
 import { createBrowserRouter } from "react-router";
 import MainLayout from "../layout/MainLayout";
 import DashboardLayout from "../layout/DashboardLayout";
+import SignInPage from "../pages/Authentication/SignInPage";
+import SignUpPage from "../pages/Authentication/SignUpPage";
 
 export const router = createBrowserRouter([
   {
@@ -10,24 +12,20 @@ export const router = createBrowserRouter([
     errorElement: <div>404 - Page Not Found</div>,
     children: [
       {
-        path: "/",
+        index: true,
         element: <div>Home Page Placeholder</div>,
       },
       {
-        path: "/login",
-        element: <div>Login Page Placeholder</div>,
+        path: "/signin",
+        element: <SignInPage />,
       },
       {
-        path: "/register",
-        element: <div>Register Page Placeholder</div>,
+        path: "/signup",
+        element: <SignUpPage />,
       },
       {
         path: "/blog",
         element: <div>Blog Page Placeholder</div>,
-      },
-      {
-        path: "/search",
-        element: <div>Search Page Placeholder</div>,
       },
     ],
   },
