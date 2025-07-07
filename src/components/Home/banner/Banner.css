@@ -1,0 +1,10 @@
+/* Change default dot color */
+.swiper-pagination-bullet {
+  background-color: var(--color-base-100);
+  border: 1px solid var(--color-primary);
+}
+
+/* Change active dot color */
+.swiper-pagination-bullet-active {
+  background-color: var(--color-primary);
+}

@@ -4,6 +4,7 @@ import MainLayout from "../layout/MainLayout";
 import DashboardLayout from "../layout/DashboardLayout";
 import SignInPage from "../pages/Authentication/SignInPage";
 import SignUpPage from "../pages/Authentication/SignUpPage";
+import HomePage from "../pages/Home/HomePage";
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <div>Home Page Placeholder</div>,
+        element: <HomePage />,
       },
       {
         path: "/signin",
