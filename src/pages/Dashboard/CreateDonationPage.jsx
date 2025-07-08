@@ -2,23 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const CreateDonationPage = () => {
+  const axiosSecure = useAxiosSecure();
   const [districts, setDistricts] = useState([]);
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [upazilas, setUpazilas] = useState([]);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const { user } = useAuth();
+
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm();
 
-  // Fetch districts on mount
+  const watchDonationDate = watch("donationDate");
+
+  // Fetch districts
   useEffect(() => {
     fetch("/data/districts.json")
       .then((res) => res.json())
@@ -31,54 +37,65 @@ const CreateDonationPage = () => {
       .catch((err) => console.error("Districts fetch error:", err));
   }, []);
 
-  // Fetch upazilas when selectedDistrictId changes
+  // Fetch upazilas on district change
   useEffect(() => {
     if (!selectedDistrictId) {
-      console.log("No district selected. Skipping upazila fetch.");
       setUpazilas([]);
       return;
     }
 
-    console.log("Fetching upazilas for district_id:", selectedDistrictId);
-
     fetch("/data/upazilas.json")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Raw upazilas data:", data);
-
         if (Array.isArray(data)) {
           const filtered = data
             .filter((u) => u.district_id === selectedDistrictId)
             .map((u) => u.name);
-
-          filtered.sort((a, b) => a.localeCompare(b));
-          setUpazilas(filtered);
-          console.log("Filtered and sorted upazilas:", filtered);
-        } else {
-          console.error("Invalid upazilas data format.");
+          setUpazilas(filtered.sort((a, b) => a.localeCompare(b)));
         }
       })
       .catch((err) => console.error("Upazilas fetch error:", err));
   }, [selectedDistrictId]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    const selectedDistrict = districts.find((d) => d.id === data.district);
+
+    const donationDateTime = new Date(
+      `${data.donationDate}T${data.donationTime}`
+    );
+    const addedAt = new Date();
+
     const donationData = {
       ...data,
+      districtId: data.district,
+      district: selectedDistrict?.name || "",
       requesterName: user?.displayName || "",
       requesterEmail: user?.email || "",
       status: "pending",
+      donationDateTime: donationDateTime.toISOString(), // Used for sorting urgency
+      addedAt: addedAt.toISOString(), // Useful for tracking when it was created
     };
 
-    console.log("Final Donation Data:", donationData);
-    toast.success("Donation request created!");
-    reset();
-    setSelectedDistrictId("");
-    setUpazilas([]);
+    try {
+      const response = await axiosSecure.post("/bloodDonations", donationData);
+
+      if (response.data.insertedId) {
+        toast.success("Donation request created!");
+        reset();
+        setSelectedDistrictId("");
+        setUpazilas([]);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error posting donation request:", error);
+      toast.error("Failed to create donation request.");
+    }
   };
 
   return (
     <div className="mx-auto bg-base-200 rounded-xl overflow-hidden shadow-xl shadow-primary/5">
-      <div className=" text-center text-secondary py-6 px-6 bg-primary/20">
+      <div className="text-center text-base-100 py-6 px-6 bg-primary">
         <h2 className="text-4xl font-bold pb-1">Create Donation Request</h2>
         <p className="opacity-80">
           Fill out the form below to request blood for someone in urgent need.
@@ -234,6 +251,14 @@ const CreateDonationPage = () => {
             type="date"
             {...register("donationDate", {
               required: "Donation date is required",
+              validate: (value) => {
+                const today = new Date();
+                const selectedDate = new Date(value + "T00:00:00"); // Normalize to midnight
+                if (selectedDate < today.setHours(0, 0, 0, 0)) {
+                  return "Donation date must be today or in the future";
+                }
+                return true;
+              },
             })}
             className="input border-none bg-primary/10 w-full focus:outline-primary/40"
           />
@@ -251,6 +276,21 @@ const CreateDonationPage = () => {
             type="time"
             {...register("donationTime", {
               required: "Donation time is required",
+              validate: (value) => {
+                if (!watchDonationDate) {
+                  return true; // no date selected yet
+                }
+                const now = new Date();
+                const selectedDateTime = new Date(
+                  `${watchDonationDate}T${value}`
+                );
+
+                const todayStr = now.toISOString().split("T")[0];
+                if (watchDonationDate === todayStr && selectedDateTime <= now) {
+                  return "Donation time must be later than current time";
+                }
+                return true;
+              },
             })}
             className="input border-none bg-primary/10 w-full focus:outline-primary/40"
           />
