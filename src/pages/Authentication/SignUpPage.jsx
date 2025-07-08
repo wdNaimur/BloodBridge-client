@@ -1,36 +1,33 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { motion, useInView } from "framer-motion";
 import useAuth from "../../hooks/useAuth";
+import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 
 const SignUpPage = () => {
   const { createUser, setUser, updateUser, googleSignIn, user } = useAuth();
   const [userCreateLoading, setUserCreateLoading] = useState(false);
-  useEffect(() => {
-    document.title = `BloodBridge | ${user?.email ? "Signed Up" : "Sign Up"}`;
-    window.scrollTo(0, 0);
-  }, [user?.email]);
-
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "0px 0px -40px 0px",
-  });
-
-  const [nameError, setNameError] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
   const [showPasswordRules, setShowPasswordRules] = useState(false);
+  const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from || "/";
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const handleTogglePassword = () => setShowPassword(!showPassword);
+  const password = watch("password") || "";
+  const confirmPassword = watch("confirmPassword") || "";
 
   const validatePassword = (password) => ({
     lengthValid: password.length >= 8 && password.length <= 16,
@@ -40,70 +37,108 @@ const SignUpPage = () => {
     hasSpecial: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
   });
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form.name.value.trim();
-    const url = form.url.value;
-    const email = form.email.value;
-    const password = form.password.value;
-    const confirmPassword = form.confirmPassword.value;
+  const passwordChecks = validatePassword(password);
 
-    if (name.length < 5) {
-      setNameError("Name should be more than 5 characters");
-      form.name.focus();
-      return;
-    } else {
-      setNameError("");
-    }
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
-    const checks = validatePassword(password);
-    if (
-      !checks.lengthValid ||
-      !checks.hasLower ||
-      !checks.hasUpper ||
-      !checks.hasNumber ||
-      !checks.hasSpecial
-    ) {
-      setErrorPassword("Password must fulfill all requirements.");
-      return;
-    } else {
-      setErrorPassword("");
-    }
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
+
+  useEffect(() => {
+    document.title = `BloodBridge | ${user?.email ? "Signed Up" : "Sign Up"}`;
+    window.scrollTo(0, 0);
+  }, [user?.email]);
+
+  useEffect(() => {
+    fetch("/data/districts.json")
+      .then((res) => res.json())
+      .then((data) =>
+        setDistricts(data.sort((a, b) => a.name.localeCompare(b.name)))
+      )
+      .catch((err) => console.error("District fetch failed:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedDistrictId) return setUpazilas([]);
+    fetch("/data/upazilas.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const filtered = data
+          .filter((u) => u.district_id === selectedDistrictId)
+          .map((u) => u.name)
+          .sort((a, b) => a.localeCompare(b));
+        setUpazilas(filtered);
+      })
+      .catch((err) => console.error("Upazila fetch failed:", err));
+  }, [selectedDistrictId]);
+
+  const onSubmit = async (formData) => {
+    const {
+      name,
+      email,
+      password,
+      confirmPassword,
+      photoUpload,
+      district,
+      upazila,
+      bloodGroup,
+    } = formData;
 
     if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match!");
-      form.confirmPassword.focus();
+      toast.error("Passwords do not match");
       return;
-    } else {
-      setConfirmPasswordError("");
     }
 
+    setUserCreateLoading(true);
+
     try {
-      setUserCreateLoading(true);
-      const res = await createUser(email, password);
-      const createdUser = res.user;
-      navigate(from);
-      try {
-        await updateUser({
-          displayName: name,
-          photoURL: url,
-        });
-        setUser({ ...createdUser, displayName: name, photoURL: url });
-        toast.success("Successfully Created Account!");
-      } catch (updateErr) {
-        console.error("Profile update failed:", updateErr);
-        setUser(createdUser);
-        toast.error("Account created, but failed to update profile.");
+      if (!photoUpload || photoUpload.length === 0) {
+        toast.error("Please upload a photo.");
+        setUserCreateLoading(false);
+        return;
       }
 
-      form.reset();
-      setPasswordInput("");
-      setShowPasswordRules(false);
-      setUserCreateLoading(false);
+      const photoURL = await uploadImageToImgBB(photoUpload[0]);
+
+      if (!photoURL) {
+        toast.error("Failed to upload photo");
+        setUserCreateLoading(false);
+        return;
+      }
+
+      const res = await createUser(email, password);
+      const createdUser = res.user;
+      navigate(from, { replace: true });
+
+      await updateUser({ displayName: name, photoURL });
+
+      setUser({
+        ...createdUser,
+        displayName: name,
+        photoURL,
+      });
+
+      const districtObj = districts.find((d) => d.id === district);
+      const districtName = districtObj ? districtObj.name : "Unknown District";
+
+      console.log("📦 Submitted User Info:", {
+        name,
+        email,
+        photoURL,
+        districtId: district,
+        districtName,
+        upazila,
+        bloodGroup,
+      });
+
+      toast.success("Account created!");
+      reset();
     } catch (err) {
-      console.error("Create user failed:", err);
-      toast.error("Failed to create account. Please try again.");
+      console.error("Signup failed:", err);
+      toast.error("Failed to create account");
+    } finally {
+      setUserCreateLoading(false);
     }
   };
 
@@ -111,28 +146,18 @@ const SignUpPage = () => {
     try {
       const result = await googleSignIn();
       if (result?.user) {
-        toast.success("Successfully Signed In with Google!");
+        toast.success("Signed In with Google!");
         navigate(from, { replace: true });
       }
     } catch (err) {
       console.error("Google Sign-In failed:", err);
-      toast.error("Failed to Sign In with Google.");
+      toast.error("Google Sign-In failed.");
     }
   };
 
-  const passwordChecks = validatePassword(passwordInput);
-
   if (user) {
     return (
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 40, filter: "blur(6px)", scale: 0.9 }}
-        animate={
-          isInView ? { opacity: 1, y: 0, filter: "blur(0px)", scale: 1 } : {}
-        }
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-        className="container mx-auto px-4 font-poppins"
-      >
+      <div className="container mx-auto px-4 font-poppins">
         <div className="p-10 space-y-2 my-10 rounded-box bg-base-100">
           <h1 className="text-4xl font-grand-hotel text-center text-primary">
             Please Logout First
@@ -142,188 +167,231 @@ const SignUpPage = () => {
             first.
           </p>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40, filter: "blur(6px)", scale: 0.9 }}
-      animate={
-        isInView ? { opacity: 1, y: 0, filter: "blur(0px)", scale: 1 } : {}
-      }
-      transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-      className="container mx-auto px-4 flex gap-10 items-center justify-center select-none my-10 font-poppins"
-    >
-      <div className="card bg-base-100 w-full max-w-sm shadow-2xl border-2 border-primary/10">
-        <div className="card-body">
-          <h2 className="text-4xl font-bold lg:text-5xl text-primary">
-            Sign Up
-          </h2>
-          <form onSubmit={handleSignUp} className="fieldset">
-            {/* Name */}
-            <label className="label text-primary">Name</label>
-            <input
-              name="name"
-              type="text"
-              className="input border-none bg-primary/10 w-full focus:outline-primary/40"
-              placeholder="Name"
-              required
-            />
-            {nameError && <p className="text-sm text-red-500">{nameError}</p>}
-
-            {/* Photo URL */}
-            <label className="label text-primary">Photo URL</label>
-            <input
-              name="photo"
-              type="file"
-              className="bg-primary/10 w-full focus:outline-primary/40"
-              placeholder="Photo URL"
-              required
-            />
-
-            {/* Email */}
-            <label className="label text-primary">Email</label>
-            <input
-              name="email"
-              type="email"
-              className="input border-none bg-primary/10 w-full focus:outline-primary/40"
-              placeholder="Email"
-              required
-            />
-
-            {/* Password */}
-            <label className="label text-primary">Password</label>
-            <div className="relative">
+    <ScrollFadeIn>
+      <div className="container mx-auto px-4 flex gap-10 items-center justify-center select-none my-10 font-poppins">
+        <div className="card bg-base-200 w-full max-w-sm shadow-primary/5 shadow-xl border-2 border-primary/10">
+          <div className="card-body">
+            <h2 className="text-4xl font-bold lg:text-5xl text-primary">
+              Sign Up
+            </h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="fieldset">
+              <label className="label text-primary">Name</label>
               <input
-                name="password"
-                type={showPassword ? "text" : "password"}
+                {...register("name", { required: true, minLength: 5 })}
                 className="input border-none bg-primary/10 w-full focus:outline-primary/40"
-                placeholder="Password"
-                value={passwordInput}
-                onChange={(e) => {
-                  setPasswordInput(e.target.value);
-                  setShowPasswordRules(true);
-                  setErrorPassword("");
-                }}
+                placeholder="Name"
               />
-              <button
-                type="button"
-                onClick={handleTogglePassword}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-50"
-              >
-                {showPassword ? <FaEye /> : <FaEyeSlash />}
-              </button>
-            </div>
+              {errors.name && (
+                <p className="text-sm text-red-500">
+                  Name must be at least 5 characters
+                </p>
+              )}
 
-            {/* Password Rules */}
-            {showPasswordRules && (
-              <div className="text-xs mt-1 ml-1 text-left text-red-500">
-                {!passwordChecks.lengthValid && (
-                  <p>✗ Password must be 8–16 characters</p>
-                )}
-                {passwordChecks.lengthValid && !passwordChecks.hasLower && (
-                  <p>✗ Must include a lowercase letter</p>
-                )}
-                {passwordChecks.lengthValid &&
-                  passwordChecks.hasLower &&
-                  !passwordChecks.hasUpper && <p>✗ Must include an letter</p>}
-                {passwordChecks.lengthValid &&
-                  passwordChecks.hasLower &&
-                  passwordChecks.hasUpper &&
-                  !passwordChecks.hasNumber && <p>✗ Must include a number</p>}
-                {passwordChecks.lengthValid &&
-                  passwordChecks.hasLower &&
-                  passwordChecks.hasUpper &&
-                  passwordChecks.hasNumber &&
-                  !passwordChecks.hasSpecial && (
-                    <p>✗ Must include a special character</p>
-                  )}
+              <label className="label text-primary">Photo</label>
+              <input
+                type="file"
+                {...register("photoUpload", { required: true })}
+                className="file-input bg-primary/10 w-full focus:outline-primary/40  border-primary/10"
+              />
+              {errors.photoUpload && (
+                <p className="text-sm text-red-500">Photo is required</p>
+              )}
+
+              <label className="label text-primary">Blood Group</label>
+              <select
+                {...register("bloodGroup", { required: true })}
+                className="input bg-primary/10 border-none w-full focus:outline-primary/40 cursor-pointer"
+              >
+                <option value="">Select Blood Group</option>
+                {bloodGroups.map((bg) => (
+                  <option key={bg} value={bg}>
+                    {bg}
+                  </option>
+                ))}
+              </select>
+              {errors.bloodGroup && (
+                <p className="text-sm text-red-500">Blood Group is required</p>
+              )}
+
+              <label className="label text-primary">District</label>
+              <select
+                {...register("district", { required: true })}
+                className="input bg-primary/10 border-none w-full focus:outline-primary/40 cursor-pointer"
+                onChange={(e) => {
+                  setSelectedDistrictId(e.target.value);
+                  setValue("district", e.target.value);
+                  setValue("upazila", "");
+                }}
+              >
+                <option value="">Select District</option>
+                {districts.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+              {errors.district && (
+                <p className="text-sm text-red-500">District is required</p>
+              )}
+
+              <label className="label text-primary">Upazila</label>
+              <select
+                {...register("upazila", { required: true })}
+                className="input bg-primary/10 border-none w-full focus:outline-primary/40 cursor-pointer"
+                disabled={!selectedDistrictId}
+              >
+                <option value="">Select Upazila</option>
+                {upazilas.map((u, idx) => (
+                  <option key={idx} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
+              {errors.upazila && (
+                <p className="text-sm text-red-500">Upazila is required</p>
+              )}
+
+              <label className="label text-primary">Email</label>
+              <input
+                {...register("email", { required: true })}
+                className="input border-none bg-primary/10 w-full focus:outline-primary/40"
+                placeholder="Email"
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">Email is required</p>
+              )}
+
+              <label className="label text-primary">Password</label>
+              <div className="relative">
+                <input
+                  {...register("password", {
+                    required: true,
+                    validate: () =>
+                      passwordChecks.lengthValid &&
+                      passwordChecks.hasLower &&
+                      passwordChecks.hasUpper &&
+                      passwordChecks.hasNumber &&
+                      passwordChecks.hasSpecial,
+                  })}
+                  type={showPassword ? "text" : "password"}
+                  onFocus={() => setShowPasswordRules(true)}
+                  className="input border-none bg-primary/10 w-full focus:outline-primary/40"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50"
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </button>
               </div>
-            )}
-            {errorPassword && (
-              <p className="text-sm text-red-500 mt-1">{errorPassword}</p>
-            )}
+              {showPasswordRules && (
+                <div className="text-xs mt-1 ml-1 text-left text-red-500">
+                  {!passwordChecks.lengthValid && <p>✗ 8–16 characters</p>}
+                  {passwordChecks.lengthValid && !passwordChecks.hasLower && (
+                    <p>✗ At least one lowercase</p>
+                  )}
+                  {passwordChecks.hasLower && !passwordChecks.hasUpper && (
+                    <p>✗ At least one uppercase</p>
+                  )}
+                  {passwordChecks.hasUpper && !passwordChecks.hasNumber && (
+                    <p>✗ At least one number</p>
+                  )}
+                  {passwordChecks.hasNumber && !passwordChecks.hasSpecial && (
+                    <p>✗ At least one special character</p>
+                  )}
+                </div>
+              )}
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">
+                  Password must meet all rules
+                </p>
+              )}
 
-            {/* Confirm Password */}
-            <label className="label text-primary">Confirm Password</label>
-            <input
-              name="confirmPassword"
-              type="password"
-              className="input border-none bg-primary/10 w-full focus:outline-primary/40"
-              placeholder="Confirm Password"
-              required
-            />
-            {confirmPasswordError && (
-              <p className="text-sm text-red-500 mt-1">
-                {confirmPasswordError}
-              </p>
-            )}
+              <label className="label text-primary">Confirm Password</label>
+              <input
+                {...register("confirmPassword", {
+                  required: true,
+                  validate: (val) => val === password,
+                })}
+                type="password"
+                className="input border-none bg-primary/10 w-full focus:outline-primary/40"
+                placeholder="Confirm Password"
+              />
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500 mt-1">
+                  Passwords do not match
+                </p>
+              )}
 
-            {/* Submit */}
-            <button
-              type="submit"
-              className="btn btn-secondary mt-4 text-base-100 w-full"
-              disabled={userCreateLoading}
-            >
-              {userCreateLoading ? "Signing Up..." : "Sign Up"}
-            </button>
-
-            {/* Google Sign-In */}
-            <div className="pt-5 border-secondary/40 border-t-2 border-dashed mt-4">
               <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                className="btn bg-white text-black border-primary/15 shadow-sm shadow-primary/15 w-full"
+                type="submit"
+                className="btn btn-secondary mt-4 text-base-100 w-full"
+                disabled={userCreateLoading}
               >
-                <svg
-                  aria-label="Google logo"
-                  width="16"
-                  height="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                >
-                  <g>
-                    <path d="m0 0H512V512H0" fill="#fff"></path>
-                    <path
-                      fill="#34a853"
-                      d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
-                    ></path>
-                    <path
-                      fill="#4285f4"
-                      d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
-                    ></path>
-                    <path
-                      fill="#fbbc02"
-                      d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
-                    ></path>
-                    <path
-                      fill="#ea4335"
-                      d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
-                    ></path>
-                  </g>
-                </svg>
-                Sign In with Google
+                {userCreateLoading ? "Signing Up..." : "Sign Up"}
               </button>
-            </div>
 
-            <div className="text-sm pt-4 text-center">
-              <p>
-                Already have an Account?{" "}
-                <Link
-                  state={{ from }}
-                  to="/signin"
-                  className="link link-hover text-primary font-semibold"
+              <div className="pt-5 border-secondary/40 border-t-2 border-dashed mt-4">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  className="btn bg-white text-black border-primary/15 shadow-sm shadow-primary/15 w-full"
                 >
-                  Sign In
-                </Link>
-              </p>
-            </div>
-          </form>
+                  <svg
+                    aria-label="Google logo"
+                    width="16"
+                    height="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                  >
+                    <g>
+                      <path d="m0 0H512V512H0" fill="#fff"></path>
+                      <path
+                        fill="#34a853"
+                        d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"
+                      ></path>
+                      <path
+                        fill="#4285f4"
+                        d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"
+                      ></path>
+                      <path
+                        fill="#fbbc02"
+                        d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"
+                      ></path>
+                      <path
+                        fill="#ea4335"
+                        d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"
+                      ></path>
+                    </g>
+                  </svg>
+                  Sign In with Google
+                </button>
+              </div>
+
+              <div className="text-sm pt-4 text-center">
+                <p>
+                  Already have an Account?{" "}
+                  <Link
+                    state={{ from }}
+                    to="/signin"
+                    className="link link-hover text-primary font-semibold"
+                  >
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </motion.div>
+    </ScrollFadeIn>
   );
 };
 

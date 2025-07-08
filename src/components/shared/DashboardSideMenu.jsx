@@ -5,11 +5,11 @@ import toast from "react-hot-toast";
 import BloodBridgeLogo from "./BloodBridgeLogo";
 
 const DashboardSideMenu = ({ handleNavClick }) => {
-  const { userSignOut } = useAuth();
+  const { logOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    userSignOut()
+    logOut()
       .then(() => {
         toast.success("Successfully logged out!");
         navigate("/");
@@ -63,7 +63,7 @@ const DashboardSideMenu = ({ handleNavClick }) => {
       <div className="mt-auto pt-16">
         <button
           onClick={handleSignOut}
-          className="w-full bg-secondary hover:bg-primary/100 text-base-100 font-semibold py-2 rounded transition-all duration-200"
+          className="w-full bg-secondary hover:bg-primary/100 text-base-100 font-semibold py-2 rounded transition-all duration-200 cursor-pointer"
         >
           Sign Out
         </button>

@@ -11,7 +11,7 @@ const NavProfile = () => {
     <div className="flex items-center gap-2">
       <Link to="/dashboard/profile">
         <img
-          className="h-10 w-10 rounded-full border-3 border-secondary"
+          className="h-10 w-10 rounded-full border-3 border-secondary object-cover"
           src={user.photoURL}
           alt={user.displayName}
         />
