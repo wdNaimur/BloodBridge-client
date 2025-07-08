@@ -5,6 +5,8 @@ import DashboardLayout from "../layout/DashboardLayout";
 import SignInPage from "../pages/Authentication/SignInPage";
 import SignUpPage from "../pages/Authentication/SignUpPage";
 import HomePage from "../pages/Home/HomePage";
+import PrivateRoute from "./PrivateRoute";
+import CreateDonationPage from "../pages/Dashboard/CreateDonationPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,11 +34,23 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "profile",
         element: <div>Dashboard Profile Page Placeholder</div>,
+      },
+      {
+        path: "create-donation-request",
+        element: (
+          <PrivateRoute>
+            <CreateDonationPage />
+          </PrivateRoute>
+        ),
       },
     ],
   },

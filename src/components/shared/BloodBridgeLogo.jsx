@@ -9,7 +9,7 @@ const BloodBridgeLogo = () => {
         src="/images/logo/BloodBridgeLogo.png"
         alt="BloodBridgeLogo"
       />
-      <h6 className="font-black font-Sora text-4xl relative z-10 sm:block hidden">
+      <h6 className="font-black font-Sora text-4xl relative sm:block hidden">
         BloodBridge
       </h6>
     </Link>

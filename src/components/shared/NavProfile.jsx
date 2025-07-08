@@ -17,7 +17,7 @@ const NavProfile = () => {
         />
       </Link>
       <button
-        className="btn btn-secondary text-base-200 border-none shadow-none uppercase"
+        className="btn btn-secondary text-base-200 border-none shadow-none  "
         onClick={handleSignOut}
       >
         Sign Out

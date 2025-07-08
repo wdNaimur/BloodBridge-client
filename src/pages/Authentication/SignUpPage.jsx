@@ -176,9 +176,9 @@ const SignUpPage = () => {
             {/* Photo URL */}
             <label className="label text-primary">Photo URL</label>
             <input
-              name="url"
-              type="url"
-              className="input border-none bg-primary/10 w-full focus:outline-primary/40"
+              name="photo"
+              type="file"
+              className="bg-primary/10 w-full focus:outline-primary/40"
               placeholder="Photo URL"
               required
             />
@@ -228,9 +228,7 @@ const SignUpPage = () => {
                 )}
                 {passwordChecks.lengthValid &&
                   passwordChecks.hasLower &&
-                  !passwordChecks.hasUpper && (
-                    <p>✗ Must include an uppercase letter</p>
-                  )}
+                  !passwordChecks.hasUpper && <p>✗ Must include an letter</p>}
                 {passwordChecks.lengthValid &&
                   passwordChecks.hasLower &&
                   passwordChecks.hasUpper &&

@@ -6,12 +6,12 @@ const ScrollFadeIn = ({
   duration = 0.5,
   delay = 0,
   yOffset = 0,
-  scaleFrom = 0.9,
+  scaleFrom = 0.95,
   blurFrom = 4,
   className = "",
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -50px 0px" });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -20px 0px" });
 
   return (
     <motion.div

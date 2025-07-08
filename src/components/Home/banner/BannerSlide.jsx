@@ -18,7 +18,7 @@ const BannerSlide = ({ backgroundImage, title, subtitle, buttonText }) => {
           <p className="mb-5 text-base md:text-lg xl:text-xl opacity-90 max-w-[90%] mx-auto">
             {subtitle}
           </p>
-          <button className="btn btn-primary text-base-200 text-md uppercase border-none shadow-none">
+          <button className="btn btn-primary text-base-200 text-md   border-none shadow-none">
             {buttonText}
           </button>
         </div>

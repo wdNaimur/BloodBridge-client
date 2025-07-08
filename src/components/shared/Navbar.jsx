@@ -9,7 +9,6 @@ const Navbar = () => {
   const { user } = useAuth();
   const [showNavbar, setShowNavbar] = useState(true);
   const lastScrollY = useRef(0);
-
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
@@ -30,6 +29,7 @@ const Navbar = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Blog", path: "/blog" },
+    { name: "Dashboard", path: "/dashboard" },
   ];
 
   const navLink = (
@@ -38,7 +38,7 @@ const Navbar = () => {
         <li key={item.path}>
           <NavLink
             to={item.path}
-            className="px-0 rounded-none mx-4 font-bold opacity-70 hover:bg-transparent hover:opacity-100 transition-all duration-300 border-b-[3px] border-dashed border-transparent py-0 text-base"
+            className="px-2 rounded-none font-bold opacity-70 hover:bg-transparent hover:opacity-100 transition-all duration-300 border-b-[3px] border-dashed border-transparent py-0 text-base"
           >
             {item.name}
           </NavLink>
@@ -55,7 +55,7 @@ const Navbar = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.4, ease: "linear" }}
-          className="navbar bg-base-200 rounded-2xl p-2 px-4 backdrop-blur-xl sticky top-5 z-50 border border-base-200/80 shadow-xl shadow-primary/5"
+          className="navbar bg-base-200/80 rounded-2xl p-2 px-4 backdrop-blur-2xl sticky top-5 z-50 border border-base-200/80 shadow-xl shadow-primary/5 select-none"
         >
           <div className="navbar-start">
             <div className="dropdown">
@@ -81,7 +81,7 @@ const Navbar = () => {
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content bg-base-100 shadow-xl shadow-primary/10 rounded-box z-1 mt-3 w-52 p-2 flex flex-col gap-3 justify-center items-center "
+                className="dropdown-content bg-base-100 shadow-xl shadow-primary/10 rounded-box z-1 mt-3 w-52 p-2 flex flex-col gap-3 justify-center items-center"
               >
                 {navLink}
               </ul>
@@ -89,7 +89,7 @@ const Navbar = () => {
             <BloodBridgeLogo />
           </div>
           <div className="navbar-center hidden lg:flex">
-            <ul className="px-2 flex text-base">{navLink}</ul>
+            <ul className="space-x-3 flex text-base">{navLink}</ul>
           </div>
           <div className="navbar-end">
             {user ? (
@@ -98,7 +98,7 @@ const Navbar = () => {
               <button>
                 <Link
                   to="signin"
-                  className="btn btn-primary text-white border-none shadow-none uppercase"
+                  className="btn btn-primary text-white border-none shadow-none  "
                 >
                   Sign In
                 </Link>
