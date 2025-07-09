@@ -30,6 +30,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Blog", path: "/blog" },
     { name: "Dashboard", path: "/dashboard" },
+    { name: "Funding", path: "/funding" },
   ];
 
   const navLink = (
@@ -55,7 +56,7 @@ const Navbar = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.4, ease: "linear" }}
-          className="navbar bg-base-200/80 rounded-2xl p-2 px-4 backdrop-blur-2xl sticky top-5 z-50 border border-base-200/80 shadow-xl shadow-primary/5 select-none"
+          className="navbar bg-base-200/90 rounded-2xl p-2 px-4 backdrop-blur-2xl sticky top-5 z-50 border border-base-200/80 shadow-xl shadow-primary/5 select-none"
         >
           <div className="navbar-start">
             <div className="dropdown">

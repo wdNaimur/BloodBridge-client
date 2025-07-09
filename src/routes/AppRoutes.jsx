@@ -8,6 +8,7 @@ import HomePage from "../pages/Home/HomePage";
 import PrivateRoute from "./PrivateRoute";
 import CreateDonationPage from "../pages/Dashboard/CreateDonationPage";
 import MyDonationRequestPage from "../pages/Dashboard/MyDonationRequestPage";
+import FundingPage from "../pages/Funding/FundingPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,14 @@ export const router = createBrowserRouter([
       {
         path: "/blog",
         element: <div>Blog Page Placeholder</div>,
+      },
+      {
+        path: "/funding",
+        element: (
+          <PrivateRoute>
+            <FundingPage />
+          </PrivateRoute>
+        ),
       },
     ],
   },
