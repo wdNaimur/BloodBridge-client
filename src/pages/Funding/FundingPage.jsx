@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FaDonate } from "react-icons/fa";
-import ScrollFadeIn from "../../UI/ScrollFadeIn";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Elements } from "@stripe/react-stripe-js";
@@ -52,24 +51,22 @@ const FundingPage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <ScrollFadeIn>
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
-          <FaDonate className="text-primary" /> Support BloodBridge
-        </h1>
-        <p className="text-secondary opacity-80 max-w-xl mb-6">
-          Your donation helps us run blood donation campaigns, maintain
-          emergency services, and save lives. Every dollar builds a bridge
-          between giving and living.
-        </p>
-      </ScrollFadeIn>
+    <div className="max-w-6xl mx-auto px-4 py-10 min-h-screen">
+      <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
+        <FaDonate className="text-primary" /> Support BloodBridge
+      </h1>
+      <p className="text-secondary opacity-80 max-w-xl mb-6">
+        Your donation helps us run blood donation campaigns, maintain emergency
+        services, and save lives. Every dollar builds a bridge between giving
+        and living.
+      </p>
 
       {/* Donation Options */}
       <div className="mb-4">
         <p className="font-medium text-secondary mb-2 text-xl">
-          Choose a donation amount :
+          Choose a donation amount:
         </p>
-        <div className="flex flex-wrap gap-6 text-md items-center h-10">
+        <div className="flex flex-wrap sm:flex-row gap-4 text-md items-center min-h-10">
           {[100, 200, 500].map((amount) => (
             <label
               key={amount}
@@ -89,31 +86,31 @@ const FundingPage = () => {
               <span>৳{amount}</span>
             </label>
           ))}
-
-          {/* Custom Radio */}
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="donation"
-              value="custom"
-              className="radio radio-primary cursor-pointer"
-              checked={selectedAmount === "custom"}
-              onChange={() => setSelectedAmount("custom")}
-            />
-            <span>Custom :</span>
-          </label>
-
-          {/* Custom Input Box */}
-          {selectedAmount === "custom" && (
-            <input
-              type="number"
-              className="input bg-primary/10 border-primary/20 w-24 text-lg focus:ring-0 focus:outline-primary/40 -ms-2"
-              value={customAmount}
-              onChange={(e) => setCustomAmount(e.target.value)}
-              placeholder="৳"
-              min={1}
-            />
-          )}
+          <div className=" flex gap-2">
+            {/* Custom Radio */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="donation"
+                value="custom"
+                className="radio radio-primary cursor-pointer"
+                checked={selectedAmount === "custom"}
+                onChange={() => setSelectedAmount("custom")}
+              />
+              <span>Custom:</span>
+            </label>
+            {/* Custom Input Box */}
+            {selectedAmount === "custom" && (
+              <input
+                type="number"
+                className="input bg-primary/10 border-primary/20 w-24 text-lg focus:ring-0 focus:outline-primary/40"
+                value={customAmount}
+                onChange={(e) => setCustomAmount(e.target.value)}
+                placeholder="৳"
+                min={1}
+              />
+            )}
+          </div>
         </div>
       </div>
 

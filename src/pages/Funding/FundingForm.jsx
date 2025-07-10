@@ -36,7 +36,7 @@ const FundingForm = ({ amount }) => {
         }
       } catch (err) {
         console.error("Client secret error:", err);
-        toast.error("Failed to initialize payment.");
+        // toast.error("Failed to initialize payment.");
       }
     };
 
@@ -94,10 +94,9 @@ const FundingForm = ({ amount }) => {
     }
 
     if (paymentIntent.status === "succeeded") {
-      toast.success("Thank you for your donation!");
-      console.log("✅ Payment successful:", paymentIntent);
+      console.log("Payment successful:", paymentIntent);
 
-      // ✅ Save donation data to backend
+      // Save donation data to backend
       const donationData = {
         name: user?.displayName || "Anonymous",
         email: user?.email,
@@ -110,12 +109,12 @@ const FundingForm = ({ amount }) => {
       try {
         const res = await axiosSecure.post("/funding-donations", donationData);
         if (res.data.insertedId) {
-          toast.success("Donation recorded successfully!");
+          toast.success("Thank you for your donation!");
         } else {
           toast.error("Payment succeeded, but failed to record donation.");
         }
       } catch (err) {
-        console.error("❌ Failed to save donation to server:", err);
+        console.error("Failed to save donation to server:", err);
         toast.error("Payment succeeded, but donation save failed.");
       }
 

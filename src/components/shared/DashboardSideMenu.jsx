@@ -3,8 +3,11 @@ import useAuth from "../../hooks/useAuth";
 import { Link, NavLink, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import BloodBridgeLogo from "./BloodBridgeLogo";
+import useRole from "../../hooks/useRole";
+import Loader from "../../UI/Loader";
 
 const DashboardSideMenu = ({ handleNavClick }) => {
+  const [role, isRoleLoading] = useRole();
   const { logOut } = useAuth();
   const navigate = useNavigate();
 
@@ -19,20 +22,39 @@ const DashboardSideMenu = ({ handleNavClick }) => {
         toast.error("Failed to Logout");
       });
   };
+  if (isRoleLoading) {
+    return <Loader />;
+  }
+  let navLinks = [];
 
-  const navLinks = [
-    { name: "Overview", path: "/dashboard", end: true },
-    { name: "Profile", path: "/dashboard/profile" },
-    {
-      name: "Create Donation Request",
-      path: "/dashboard/create-donation-request",
-    },
-    {
-      name: "My Donation Requests",
-      path: "/dashboard/my-donation-request",
-    },
-    { name: "Exit Dashboard", path: "/" },
-  ];
+  if (role === "donor") {
+    navLinks = [
+      { name: "Overview", path: "/dashboard", end: true },
+      { name: "Profile", path: "/dashboard/profile" },
+      {
+        name: "Create Donation Request",
+        path: "/dashboard/create-donation-request",
+      },
+      { name: "My Donation Requests", path: "/dashboard/my-donation-request" },
+    ];
+  } else if (role === "admin") {
+    navLinks = [
+      { name: "Overview", path: "/dashboard", end: true },
+      { name: "Profile", path: "/dashboard/profile" },
+      { name: "User Management", path: "/dashboard/users" },
+      { name: "Manage Blogs", path: "/dashboard/blogs" },
+      { name: "Funding Panel", path: "/dashboard/funding" },
+    ];
+  } else if (role === "volunteer") {
+    navLinks = [
+      { name: "Overview", path: "/dashboard", end: true },
+      { name: "Profile", path: "/dashboard/profile" },
+      { name: "Manage Donation Requests", path: "/dashboard/manage-donations" },
+    ];
+  }
+
+  // Add exit link for all roles
+  navLinks.push({ name: "Exit Dashboard", path: "/" });
 
   return (
     <menu className="w-96 h-screen bg-base-200 text-secondary p-6 flex flex-col shadow-xl shadow-primary/5 fixed top-0 left-0 overflow-y-auto">

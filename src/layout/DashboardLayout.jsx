@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, Outlet, useNavigation } from "react-router";
-// import Menu from "../components/Dashboard/overview/Menu";
 
 import { GiHamburgerMenu } from "react-icons/gi";
 import useAuth from "../hooks/useAuth";
