@@ -117,13 +117,14 @@ const SignUpPage = () => {
         photoURL,
       });
 
-      // const districtObj = districts.find((d) => d.id === district);
-      // const districtName = districtObj ? districtObj.name : "Unknown District";
+      const districtObj = districts.find((d) => d.id === district);
+      const districtName = districtObj ? districtObj.name : "Unknown District";
       const userData = {
         name,
         email: email.toLowerCase(),
         image: photoURL,
         districtId: parseInt(district),
+        districtName,
         upazila,
         bloodGroup,
       };
@@ -143,7 +144,7 @@ const SignUpPage = () => {
   if (user) {
     return (
       <FeedbackMessage
-        title={`Welcome! ${user.displayName}🎉`}
+        title={`Welcome! ${user.displayName || "user"}🎉`}
         message={`You’re already logged in and good to go.`}
       />
     );

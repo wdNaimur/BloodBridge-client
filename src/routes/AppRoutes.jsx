@@ -10,6 +10,7 @@ import CreateDonationPage from "../pages/Dashboard/CreateDonationPage";
 import MyDonationRequestPage from "../pages/Dashboard/MyDonationRequestPage";
 import FundingPage from "../pages/Funding/FundingPage";
 import ProfilePage from "../pages/Dashboard/ProfilePage";
+import BloodRequestPage from "../pages/BloodRequest/BloodRequestPage";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignUpPage />,
+      },
+      {
+        path: "/blood-requests",
+        element: <BloodRequestPage />,
       },
       {
         path: "/blog",

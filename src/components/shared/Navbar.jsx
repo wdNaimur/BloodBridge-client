@@ -28,9 +28,10 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", path: "/" },
+    { name: "Blood Requests", path: "/blood-requests" },
+    { name: "Search Donors", path: "/search" },
+    { name: "Support Us", path: "/funding" },
     { name: "Blog", path: "/blog" },
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Funding", path: "/funding" },
   ];
 
   const navLink = (
