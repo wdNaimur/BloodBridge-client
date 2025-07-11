@@ -8,17 +8,15 @@ import toast from "react-hot-toast";
 import { FaEdit } from "react-icons/fa";
 import DistrictUpazilaSelect from "../../components/shared/DistrictUpazilaSelect";
 import useDistrictName from "../../hooks/useDistrictName";
+import { motion } from "motion/react";
 
 const ProfilePage = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [editable, setEditable] = useState(false);
-  // Local state for district/upazila
-
   const [districtId, setDistrictId] = useState("");
   const [upazila, setUpazila] = useState("");
 
-  // Fetch user profile
   const fetchUser = async () => {
     const { data } = await axiosSecure.get(`/user/${user.email}`);
     return data;
@@ -33,11 +31,10 @@ const ProfilePage = () => {
     queryKey: ["user", user.email],
     queryFn: fetchUser,
   });
-  console.log(profileData);
-  console.log(profileData?.districtId);
+
   const districtName = useDistrictName(profileData?.districtId);
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-  // React Hook Form
+
   const {
     register,
     handleSubmit,
@@ -45,13 +42,11 @@ const ProfilePage = () => {
     formState: { errors },
   } = useForm();
 
-  // Set default form values when data is available
   useEffect(() => {
     if (profileData) {
       reset({
         name: profileData.name,
         email: profileData.email,
-        address: profileData.address,
         bloodGroup: profileData.bloodGroup,
       });
       setDistrictId(profileData.districtId || "");
@@ -59,26 +54,22 @@ const ProfilePage = () => {
     }
   }, [profileData, reset]);
 
-  // Handle district/upazila change
   const handleDistrictChange = (id) => {
     setDistrictId(id);
-    setUpazila(""); // reset upazila
+    setUpazila("");
   };
 
   const handleUpazilaChange = (value) => {
     setUpazila(value);
   };
 
-  // Form submission
   const onSubmit = async (updatedData) => {
     const fullData = {
       ...updatedData,
       districtId,
+      districtName,
       upazila,
     };
-
-    console.log("Submitted Profile Data:", fullData);
-
     try {
       await axiosSecure.put(`/user/${user.email}`, fullData);
       toast.success("Profile updated successfully");
@@ -94,7 +85,6 @@ const ProfilePage = () => {
 
   return (
     <div>
-      {/* Heading */}
       <div className="mb-6 border-b-2 border-dashed border-secondary/20">
         <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
           My Profile
@@ -104,14 +94,15 @@ const ProfilePage = () => {
         </p>
       </div>
 
-      {/* Form */}
-      <form
+      <motion.form
+        layout
         onSubmit={handleSubmit(onSubmit)}
         className="grid 2xl:grid-cols-3 gap-4"
       >
-        {/* Profile Card */}
-        <div className="2xl:col-span-1 bg-base-200 p-4 rounded-2xl flex flex-col gap-2 justify-center items-center shadow-xl shadow-primary/5 relative">
-          <h3 className="text-3xl font-Sora font-bold">{profileData.name}</h3>
+        <div className="2xl:col-span-1 bg-base-200 p-5 rounded-2xl flex flex-col gap-2 justify-center items-center shadow-xl shadow-primary/5 relative">
+          <h3 className="text-3xl font-Sora font-bold text-center mt-2">
+            {profileData.name}
+          </h3>
           <p className="uppercase font-medium text-primary leading-2">
             {profileData.role}
           </p>
@@ -120,12 +111,11 @@ const ProfilePage = () => {
             src={profileData.image}
             alt={profileData.name}
           />
-          <p className="badge badge-primary uppercase text-base-100 text-xs font-medium absolute top-4 right-4">
+          <p className="badge badge-primary uppercase text-base-100 text-xs font-medium absolute top-2 right-2 scale-80">
             {profileData.status}
           </p>
         </div>
 
-        {/* Editable Info */}
         <div className="2xl:col-span-2 bg-base-200 p-4 rounded-2xl shadow-xl shadow-primary/5 font-Poppins">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-medium pb-2 mb-4 border-b-2 border-dashed border-secondary/20">
@@ -136,7 +126,7 @@ const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => setEditable(true)}
-                  className="text-secondary cursor-pointer opacity-60 hover:opacity-100"
+                  className="text-secondary cursor-pointer opacity-60 hover:opacity-100 hover:bg-secondary/20 p-2 rounded-full duration-300"
                 >
                   <FaEdit />
                 </button>
@@ -151,7 +141,7 @@ const ProfilePage = () => {
                   </button>
                   <button
                     type="button"
-                    className="btn btn-secondary text-base-200 shadow-none border-none btn-xs ml-1 "
+                    className="btn btn-secondary text-base-200 shadow-none border-none btn-xs ml-1"
                     onClick={() => {
                       setEditable(false);
                       reset(profileData);
@@ -167,7 +157,6 @@ const ProfilePage = () => {
           </div>
 
           <div className="px-4 space-y-2">
-            {/* Name */}
             <div>
               <label className="label text-primary">Name</label>
               <input
@@ -185,7 +174,6 @@ const ProfilePage = () => {
               )}
             </div>
 
-            {/* Email (view-only) */}
             {!editable && (
               <div>
                 <label className="label text-primary">Email</label>
@@ -198,42 +186,30 @@ const ProfilePage = () => {
               </div>
             )}
 
-            {/* Address (view-only) */}
-            {!editable && districtName && (
+            {!editable && (
               <div>
                 <label className="label text-primary">Address</label>
                 <input
                   type="text"
                   readOnly
                   className="input border-none w-full shadow-none bg-transparent p-0 text-secondary font-medium focus:outline-0 focus:shadow-none cursor-default text-xl -mt-1"
-                  defaultValue={`${upazila}, ${districtName}`}
+                  value={
+                    upazila && districtName
+                      ? `${upazila}, ${districtName}`
+                      : "Not Provided"
+                  }
                 />
               </div>
             )}
 
-            {/* District/Upazila Select in Edit Mode */}
             {editable && (
-              <>
-                {!editable && (
-                  <div className="mt-2">
-                    <label className="label text-primary">Address</label>
-
-                    <input
-                      type="text"
-                      {...register("address")}
-                      className="input input-bordered w-full"
-                    />
-                  </div>
-                )}
-                <DistrictUpazilaSelect
-                  selectedDistrictId={districtId}
-                  setSelectedDistrictId={handleDistrictChange}
-                  upazila={upazila}
-                  setUpazila={handleUpazilaChange}
-                />
-              </>
+              <DistrictUpazilaSelect
+                selectedDistrictId={districtId}
+                setSelectedDistrictId={handleDistrictChange}
+                upazila={upazila}
+                setUpazila={handleUpazilaChange}
+              />
             )}
-            {/* Blood Group */}
 
             <div>
               <label className="label text-primary">Blood Group</label>
@@ -267,9 +243,7 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-      </form>
-
-      {/* Save / Cancel Buttons */}
+      </motion.form>
     </div>
   );
 };
