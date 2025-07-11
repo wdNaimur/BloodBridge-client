@@ -8,6 +8,7 @@ import ScrollFadeIn from "../../UI/ScrollFadeIn";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 import GoogleSignInButton from "./GoogleSignInButton";
 import saveUserInDB from "../../utils/saveUserInDB";
+import FeedbackMessage from "../../UI/FeedbackMessage ";
 
 const SignUpPage = () => {
   const { createUser, setUser, updateUser, user } = useAuth();
@@ -109,7 +110,6 @@ const SignUpPage = () => {
 
       const res = await createUser(email, password);
       const createdUser = res.user;
-      navigate(from, { replace: true });
       await updateUser({ displayName: name, photoURL });
       setUser({
         ...createdUser,
@@ -117,20 +117,20 @@ const SignUpPage = () => {
         photoURL,
       });
 
-      const districtObj = districts.find((d) => d.id === district);
-      const districtName = districtObj ? districtObj.name : "Unknown District";
+      // const districtObj = districts.find((d) => d.id === district);
+      // const districtName = districtObj ? districtObj.name : "Unknown District";
       const userData = {
         name,
-        email,
+        email: email.toLowerCase(),
         image: photoURL,
-        districtId: district,
-        districtName,
+        districtId: parseInt(district),
         upazila,
         bloodGroup,
       };
       await saveUserInDB(userData);
 
       toast.success("Account created!");
+      navigate(from, { replace: true });
       reset();
     } catch (err) {
       console.error("Signup failed:", err);
@@ -142,17 +142,10 @@ const SignUpPage = () => {
 
   if (user) {
     return (
-      <div className="container mx-auto px-4 font-poppins">
-        <div className="p-10 space-y-2 my-10 rounded-box bg-base-100">
-          <h1 className="text-4xl font-grand-hotel text-center text-primary">
-            Please Logout First
-          </h1>
-          <p className="text-center opacity-80">
-            You are already logged in. To create a new account, please logout
-            first.
-          </p>
-        </div>
-      </div>
+      <FeedbackMessage
+        title={`Welcome! ${user.displayName}🎉`}
+        message={`You’re already logged in and good to go.`}
+      />
     );
   }
 
@@ -244,7 +237,7 @@ const SignUpPage = () => {
               <label className="label text-primary">Email</label>
               <input
                 {...register("email", { required: true })}
-                className="input border-none bg-primary/10 w-full focus:outline-primary/40"
+                className="input border-none bg-primary/10 w-full focus:outline-primary/40 lowercase"
                 placeholder="Email"
               />
               {errors.email && (

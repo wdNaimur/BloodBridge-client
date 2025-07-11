@@ -18,6 +18,8 @@ const useRole = () => {
         setIsRoleLoading(false);
       } catch (error) {
         console.error("Failed to fetch role:", error);
+      } finally {
+        setIsRoleLoading(false);
       }
     };
 
