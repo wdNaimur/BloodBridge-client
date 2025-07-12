@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -6,9 +6,11 @@ import useAuth from "../../hooks/useAuth";
 import Loader from "../../UI/Loader";
 import toast from "react-hot-toast";
 import { FaEdit } from "react-icons/fa";
+import { FiCamera } from "react-icons/fi";
 import DistrictUpazilaSelect from "../../components/shared/DistrictUpazilaSelect";
 import useDistrictName from "../../hooks/useDistrictName";
 import { motion } from "motion/react";
+import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -16,6 +18,10 @@ const ProfilePage = () => {
   const [editable, setEditable] = useState(false);
   const [districtId, setDistrictId] = useState("");
   const [upazila, setUpazila] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+
+  const fileInputRef = useRef();
 
   const fetchUser = async () => {
     const { data } = await axiosSecure.get(`/user/${user.email}`);
@@ -51,6 +57,7 @@ const ProfilePage = () => {
       });
       setDistrictId(profileData.districtId || "");
       setUpazila(profileData.upazila || "");
+      setImageUrl(profileData.image || "");
     }
   }, [profileData, reset]);
 
@@ -63,12 +70,27 @@ const ProfilePage = () => {
     setUpazila(value);
   };
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadImageToImgBB(file);
+    setUploading(false);
+    if (url) {
+      setImageUrl(url);
+      toast.success("Image uploaded successfully");
+    } else {
+      toast.error("Image upload failed");
+    }
+  };
+
   const onSubmit = async (updatedData) => {
     const fullData = {
       ...updatedData,
       districtId,
       districtName,
       upazila,
+      image: imageUrl,
     };
     try {
       await axiosSecure.put(`/user/${user.email}`, fullData);
@@ -81,7 +103,7 @@ const ProfilePage = () => {
   };
 
   if (isLoading) return <Loader />;
-  if (error) return;
+  if (error) return null;
 
   return (
     <div>
@@ -99,6 +121,7 @@ const ProfilePage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid 2xl:grid-cols-3 gap-4"
       >
+        {/* PROFILE IMAGE AREA */}
         <div className="2xl:col-span-1 bg-base-200 p-5 rounded-2xl flex flex-col gap-2 justify-center items-center shadow-xl shadow-primary/5 relative">
           <h3 className="text-3xl font-Sora font-bold text-center mt-2">
             {profileData.name}
@@ -106,16 +129,48 @@ const ProfilePage = () => {
           <p className="uppercase font-medium text-primary leading-2">
             {profileData.role}
           </p>
-          <img
-            className="rounded-full w-60 h-60 object-cover border-4 border-secondary/40 mt-2"
-            src={profileData.image}
-            alt={profileData.name}
-          />
-          <p className="badge badge-primary uppercase text-base-100 text-xs font-medium absolute top-2 right-2 scale-80">
-            {profileData.status}
-          </p>
+
+          {/* Image container */}
+          <div className="relative w-60 h-60">
+            <img
+              className="rounded-full w-full h-full object-cover border-4 border-secondary/40"
+              src={imageUrl || profileData.image}
+              alt={profileData.name}
+            />
+
+            {uploading && (
+              <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
+                <span className="loading loading-spinner text-white"></span>
+              </div>
+            )}
+
+            {editable && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current.click()}
+                  className="absolute bottom-2 right-2 bg-white text-primary p-2 rounded-full shadow hover:bg-primary hover:text-white transition"
+                  title="Change Photo"
+                >
+                  <FiCamera className="w-5 h-5" />
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </>
+            )}
+
+            <p className="badge badge-primary uppercase text-base-100 text-xs font-medium absolute bottom-2 translate-y-1/2 right-1/2 translate-x-1/2">
+              {profileData.status}
+            </p>
+          </div>
         </div>
 
+        {/* PROFILE FORM AREA */}
         <div className="2xl:col-span-2 bg-base-200 p-4 rounded-2xl shadow-xl shadow-primary/5 font-Poppins">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-medium pb-2 mb-4 border-b-2 border-dashed border-secondary/20">
@@ -136,6 +191,7 @@ const ProfilePage = () => {
                   <button
                     type="submit"
                     className="btn btn-primary text-base-200 shadow-none border-none btn-xs"
+                    disabled={uploading}
                   >
                     Save Changes
                   </button>
@@ -147,7 +203,9 @@ const ProfilePage = () => {
                       reset(profileData);
                       setDistrictId(profileData.districtId || "");
                       setUpazila(profileData.upazila || "");
+                      setImageUrl(profileData.image || "");
                     }}
+                    disabled={uploading}
                   >
                     Cancel
                   </button>

@@ -1,11 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../UI/Loader";
 
 const NavProfile = () => {
   const { user, logOut } = useAuth();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const axiosSecure = useAxiosSecure();
+
+  const fetchUser = async () => {
+    const { data } = await axiosSecure.get(`/user/${user.email}`);
+    return data;
+  };
+
+  const { data: profileData, isLoading } = useQuery({
+    queryKey: ["user", user.email],
+    queryFn: fetchUser,
+  });
+  console.log(profileData);
 
   const handleSignOut = () => {
     logOut();
@@ -24,6 +39,9 @@ const NavProfile = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="relative font-Poppins" ref={dropdownRef}>
@@ -33,7 +51,10 @@ const NavProfile = () => {
         className="btn btn-ghost btn-circle avatar cursor-pointer"
       >
         <div className="w-10 rounded-full border-2 border-secondary">
-          <img src={user?.photoURL} alt={user?.displayName || "User Avatar"} />
+          <img
+            src={profileData?.image}
+            alt={user?.displayName || "User Avatar"}
+          />
         </div>
       </div>
 

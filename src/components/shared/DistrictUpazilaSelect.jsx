@@ -59,11 +59,12 @@ const DistrictUpazilaSelect = ({
         <select
           id="district"
           value={selectedDistrictId || ""}
+          required
           onChange={(e) => {
             setSelectedDistrictId(e.target.value);
             setUpazila(""); // Reset selected upazila
           }}
-          className="input border-none w-full shadow-none text-secondary/80 focus:outline-primary/40 bg-primary/10"
+          className="input border-none w-full shadow-none text-secondary/80 focus:outline-primary/40 bg-primary/10 cursor-pointer"
         >
           <option value="">Select District</option>
           {districts.map((d) => (
@@ -83,8 +84,9 @@ const DistrictUpazilaSelect = ({
           id="upazila"
           value={upazila || ""}
           onChange={(e) => setUpazila(e.target.value)}
+          required
           disabled={!selectedDistrictId}
-          className="input border-none w-full shadow-none text-secondary/80 focus:outline-primary/40 bg-primary/10"
+          className="input border-none w-full shadow-none text-secondary/80 focus:outline-primary/40 bg-primary/10 cursor-pointer"
         >
           <option value="">Select Upazila</option>
           {upazilas.map((u, idx) => (
