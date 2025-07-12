@@ -119,7 +119,7 @@ const SignInPage = () => {
 
               <button
                 type="submit"
-                className="btn btn-secondary mt-4 text-base-100"
+                className="btn rounded-xl btn-secondary mt-4 text-base-100"
                 disabled={userCreateLoading}
               >
                 {userCreateLoading ? "Signing In..." : "Sign In"}

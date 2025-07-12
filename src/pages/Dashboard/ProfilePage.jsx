@@ -186,31 +186,6 @@ const ProfilePage = () => {
                   <FaEdit />
                 </button>
               )}
-              {editable && (
-                <div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary text-base-200 shadow-none border-none btn-xs"
-                    disabled={uploading}
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary text-base-200 shadow-none border-none btn-xs ml-1"
-                    onClick={() => {
-                      setEditable(false);
-                      reset(profileData);
-                      setDistrictId(profileData.districtId || "");
-                      setUpazila(profileData.upazila || "");
-                      setImageUrl(profileData.image || "");
-                    }}
-                    disabled={uploading}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
             </div>
           </div>
 
@@ -266,6 +241,8 @@ const ProfilePage = () => {
                 setSelectedDistrictId={handleDistrictChange}
                 upazila={upazila}
                 setUpazila={handleUpazilaChange}
+                requiredDistrict={true}
+                requiredUpazila={true}
               />
             )}
 
@@ -299,6 +276,31 @@ const ProfilePage = () => {
                 />
               )}
             </div>
+            {editable && (
+              <div>
+                <button
+                  type="submit"
+                  className="btn rounded-xl  text-base-200 shadow-none border-none btn-primary"
+                  disabled={uploading}
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="btn rounded-xl  btn-secondary text-base-200 shadow-none border-none  ml-2"
+                  onClick={() => {
+                    setEditable(false);
+                    reset(profileData);
+                    setDistrictId(profileData.districtId || "");
+                    setUpazila(profileData.upazila || "");
+                    setImageUrl(profileData.image || "");
+                  }}
+                  disabled={uploading}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </motion.form>

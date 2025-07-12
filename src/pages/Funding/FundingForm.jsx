@@ -146,7 +146,7 @@ const FundingForm = ({ amount }) => {
 
       <button
         type="submit"
-        className="btn btn-primary w-full text-base-200 mt-4 text-base"
+        className="btn rounded-xl btn-primary shadow-none border-none uppercase  w-full text-base-200 mt-4 text-base"
         disabled={!stripe || !clientSecret || processing}
       >
         {processing ? (

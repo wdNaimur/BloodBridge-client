@@ -24,12 +24,12 @@ const Navbar = () => {
       const currentY = window.scrollY;
       const diff = currentY - lastScrollY.current;
 
-      // If scrolled down >200px, hide navbar
-      if (diff > 200) {
+      // If scrolled down >40px, hide navbar
+      if (diff > 40) {
         setShowNavbar(false);
       }
-      // If scrolled up >20px, show navbar
-      else if (diff < -20) {
+      // If scrolled up >1px, show navbar
+      else if (diff < -1) {
         setShowNavbar(true);
       }
 
@@ -151,7 +151,7 @@ const Navbar = () => {
               <button>
                 <Link
                   to="signin"
-                  className="btn btn-primary text-white border-none shadow-none"
+                  className="btn rounded-xl btn-primary uppercase text-white border-none shadow-none"
                 >
                   Sign In
                 </Link>

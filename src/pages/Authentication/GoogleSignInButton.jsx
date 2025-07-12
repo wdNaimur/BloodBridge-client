@@ -31,7 +31,7 @@ const GoogleSignInButton = () => {
     <button
       type="button"
       onClick={handleGoogleSignIn}
-      className="btn bg-white text-black border-primary/15 shadow-sm shadow-primary/15 w-full"
+      className="btn rounded-xl bg-white text-black border-primary/15 shadow-sm shadow-primary/15 w-full"
     >
       <svg
         aria-label="Google logo"

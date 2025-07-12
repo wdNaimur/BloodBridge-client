@@ -311,7 +311,7 @@ const SignUpPage = () => {
 
               <button
                 type="submit"
-                className="btn btn-secondary mt-4 text-base-100 w-full"
+                className="btn rounded-xl btn-secondary mt-4 text-base-100 w-full"
                 disabled={userCreateLoading}
               >
                 {userCreateLoading ? "Signing Up..." : "Sign Up"}

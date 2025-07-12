@@ -115,7 +115,7 @@ const MyDonationRequestPage = () => {
                     <td className="min-w-28 text-center">
                       <button
                         onClick={() => handleDetails(donation)}
-                        className="btn btn-xs btn-outline btn-primary"
+                        className="btn rounded-xl btn-xs btn-outline btn-primary"
                       >
                         Details
                       </button>
@@ -199,7 +199,9 @@ const MyDonationRequestPage = () => {
               )}
               <div className="modal-action">
                 <form method="dialog">
-                  <button className="btn">Close</button>
+                  <button className="btn rounded-xl btn-secondary shadow-none  border-none text-base-100 btn-sm">
+                    Close
+                  </button>
                 </form>
               </div>
             </div>

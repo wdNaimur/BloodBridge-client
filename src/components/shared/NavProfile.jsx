@@ -48,7 +48,7 @@ const NavProfile = () => {
       {/* Avatar Button */}
       <div
         onClick={() => setOpen(!open)}
-        className="btn btn-ghost btn-circle avatar cursor-pointer"
+        className="btn  btn-circle avatar cursor-pointer"
       >
         <div className="w-10 rounded-full border-2 border-secondary">
           <img
@@ -81,7 +81,7 @@ const NavProfile = () => {
             </li>
             <li>
               <button
-                className="btn btn-secondary text-base-200 border-none shadow-none mt-2"
+                className="btn rounded-xl btn-secondary text-base-200 border-none shadow-none mt-2"
                 onClick={handleSignOut}
               >
                 Sign Out

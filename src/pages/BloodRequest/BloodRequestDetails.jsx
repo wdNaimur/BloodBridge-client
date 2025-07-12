@@ -7,6 +7,18 @@ import useAuth from "../../hooks/useAuth";
 import { format, parseISO } from "date-fns";
 import { RxCross2 } from "react-icons/rx";
 import Loader from "../../UI/Loader";
+
+import {
+  FaInfoCircle,
+  FaTint,
+  FaMapMarkerAlt,
+  FaHospital,
+  FaCalendarAlt,
+  FaUserAlt,
+  FaEnvelope,
+  FaCommentAlt,
+} from "react-icons/fa";
+import PageHeader from "../../UI/PageHeader";
 import FeedbackMessage from "../../UI/FeedbackMessage ";
 
 const BloodRequestDetails = () => {
@@ -84,75 +96,129 @@ const BloodRequestDetails = () => {
   const isRequester = user?.email === request?.requesterEmail;
 
   return (
-    <div className="container mx-auto p-4 font-poppins max-w-xl">
-      <h1 className="text-3xl font-bold mb-4 text-primary">
-        Blood Donation Request Details
-      </h1>
+    <div className="container mx-auto px-4 font-poppins mt-10">
+      <PageHeader
+        icon={FaInfoCircle}
+        title="Blood Donation Request Details"
+        subtitle="Review the request and take action to help someone in urgent need."
+      />
 
-      <div className="bg-base-200 p-6 rounded shadow-lg shadow-primary/5 space-y-3">
-        <p>
-          <strong>Recipient Name:</strong> {request.recipientName}
-        </p>
-        <p>
-          <strong>Blood Group:</strong> {request.bloodGroup}
-        </p>
-        <p>
-          <strong>District:</strong> {request.district}
-        </p>
-        <p>
-          <strong>Upazila:</strong> {request.upazila}
-        </p>
-        <p>
-          <strong>Hospital Name:</strong> {request.hospitalName}
-        </p>
-        <p>
-          <strong>Address:</strong> {request.address}
-        </p>
-        <p>
-          <strong>Donation Date:</strong>{" "}
-          {format(parseISO(request.donationDateTime), "PP")}
-        </p>
-        <p>
-          <strong>Donation Time:</strong> {request.donationTime}
-        </p>
-        <p>
-          <strong>Request Message:</strong> {request.requestMessage}
-        </p>
-        <p>
-          <strong>Requester Name:</strong> {request.requesterName}
-        </p>
-        <p>
-          <strong>Requester Email:</strong> {request.requesterEmail}
-        </p>
-        <p className="flex items-center gap-2">
-          <strong>Status:</strong>{" "}
-          <span className="badge badge-primary text-base-200 pb-1">
-            {request.status}
-          </span>
-        </p>
-        <p>
-          <strong>Added At:</strong>{" "}
-          {format(parseISO(request.addedAt), "p, PP")}
-        </p>
-
-        {request.status === "pending" && !isRequester && (
-          <div className="mt-6">
-            <button
-              onClick={openModal}
-              className="btn btn-primary w-full text-base-100 shadow-none border-none"
-            >
-              Donate
-            </button>
+      <div className="bg-base-200 p-4 md:p-6 rounded-xl border border-primary/10 shadow-lg shadow-primary/5 text-secondary space-y-6">
+        {/* Info grid */}
+        <div className="grid 2xl:grid-cols-3 md:grid-cols-2 gap-6 justify-center items-start">
+          {/* Recipient Info */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaTint />
+              Recipient Info
+            </h3>
+            <p>
+              <span className="font-medium">Name:</span> {request.recipientName}
+            </p>
+            <p>
+              <span className="font-medium">Blood Group:</span>{" "}
+              <span className="badge badge-error">{request.bloodGroup}</span>
+            </p>
           </div>
+
+          {/* Location */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaMapMarkerAlt />
+              Location
+            </h3>
+            <p>
+              <span className="font-medium">District:</span> {request.district}
+            </p>
+            <p>
+              <span className="font-medium">Upazila:</span> {request.upazila}
+            </p>
+          </div>
+
+          {/* Hospital Info */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaHospital />
+              Hospital
+            </h3>
+            <p>
+              <span className="font-medium">Hospital Name:</span>{" "}
+              {request.hospitalName}
+            </p>
+            <p>
+              <span className="font-medium">Address:</span> {request.address}
+            </p>
+          </div>
+
+          {/* Schedule */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaCalendarAlt />
+              Schedule
+            </h3>
+            <p>
+              <span className="font-medium">Date:</span>{" "}
+              {format(parseISO(request.donationDateTime), "PP")}
+            </p>
+            <p>
+              <span className="font-medium">Time:</span> {request.donationTime}
+            </p>
+            <p>
+              <span className="font-medium">Added:</span>{" "}
+              {format(parseISO(request.addedAt), "p, PP")}
+            </p>
+          </div>
+
+          {/* Requester */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaUserAlt />
+              Requester
+            </h3>
+            <p>
+              <span className="font-medium">Name:</span> {request.requesterName}
+            </p>
+            <p>
+              <span className="font-medium">Email:</span>{" "}
+              {request.requesterEmail}
+            </p>
+            <p>
+              <span className="font-medium">Status:</span>{" "}
+              <span className="badge badge-primary uppercase pb-0.5 text-white">
+                {request.status}
+              </span>
+            </p>
+          </div>
+
+          {/* Message */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">
+              <FaCommentAlt />
+              Message
+            </h3>
+            <p>{request.requestMessage || "No message provided."}</p>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        {request.status === "pending" && !isRequester && (
+          <button
+            onClick={openModal}
+            className="btn rounded-xl btn-primary   w-full mt-4 text-base-200 shadow-none border-none uppercase"
+          >
+            Donate
+          </button>
         )}
 
+        {/* Self-Request Warning */}
         {isRequester && (
-          <p className="mt-6 text-center text-red-600 font-semibold">
+          <p className="text-center mt-4 text-red-600 font-medium">
             You cannot donate to your own blood request.
           </p>
         )}
       </div>
 
+      {/* Modal */}
       {modalOpen && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
@@ -162,7 +228,9 @@ const BloodRequestDetails = () => {
             className="bg-white rounded p-6 w-full max-w-md relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-bold mb-4">Confirm Donation</h2>
+            <h2 className="text-xl text-primary font-bold mb-4">
+              Confirm Donation
+            </h2>
 
             <form>
               <div className="mb-4">
@@ -171,7 +239,7 @@ const BloodRequestDetails = () => {
                   type="text"
                   value={user?.displayName || ""}
                   readOnly
-                  className="input input-bordered w-full bg-gray-100 cursor-not-allowed"
+                  className="cursor-not-allowed input border-none bg-primary/10 w-full focus:outline-none"
                 />
               </div>
 
@@ -181,7 +249,7 @@ const BloodRequestDetails = () => {
                   type="email"
                   value={user?.email || ""}
                   readOnly
-                  className="input input-bordered w-full bg-gray-100 cursor-not-allowed"
+                  className="cursor-not-allowed input border-none bg-primary/10 w-full focus:outline-none"
                 />
               </div>
 
@@ -197,7 +265,7 @@ const BloodRequestDetails = () => {
                 <button
                   type="button"
                   onClick={handleConfirmDonation}
-                  className="btn btn-primary text-base-200 border-none shadow-none w-full"
+                  className="btn rounded-xl btn-primary text-base-200 border-none shadow-none w-full uppercase"
                   disabled={updatingStatus}
                 >
                   {updatingStatus ? "Confirming..." : "Confirm"}

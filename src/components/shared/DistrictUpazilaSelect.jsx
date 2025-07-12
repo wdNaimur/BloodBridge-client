@@ -5,6 +5,8 @@ const DistrictUpazilaSelect = ({
   setSelectedDistrictId,
   upazila,
   setUpazila,
+  requiredDistrict,
+  requiredUpazila,
 }) => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -49,7 +51,7 @@ const DistrictUpazilaSelect = ({
   }, [selectedDistrictId]);
 
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-2 gap-4 w-full">
       {/* District Selection */}
       <div>
         <label htmlFor="district" className="block label text-primary">
@@ -59,7 +61,7 @@ const DistrictUpazilaSelect = ({
         <select
           id="district"
           value={selectedDistrictId || ""}
-          required
+          required={requiredDistrict}
           onChange={(e) => {
             setSelectedDistrictId(e.target.value);
             setUpazila(""); // Reset selected upazila
@@ -83,8 +85,8 @@ const DistrictUpazilaSelect = ({
         <select
           id="upazila"
           value={upazila || ""}
+          required={requiredUpazila}
           onChange={(e) => setUpazila(e.target.value)}
-          required
           disabled={!selectedDistrictId}
           className="input border-none w-full shadow-none text-secondary/80 focus:outline-primary/40 bg-primary/10 cursor-pointer"
         >

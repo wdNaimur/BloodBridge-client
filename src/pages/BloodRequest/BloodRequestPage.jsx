@@ -2,11 +2,11 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../UI/Loader";
-import { FaTint } from "react-icons/fa";
+import { BiDonateBlood } from "react-icons/bi";
 import { format } from "date-fns";
 import { Link } from "react-router";
-import toast from "react-hot-toast";
 import FeedbackMessage from "../../UI/FeedbackMessage ";
+import PageHeader from "../../UI/PageHeader";
 
 const BloodRequestPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -15,7 +15,6 @@ const BloodRequestPage = () => {
     data: requests = [],
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["bloodDonations"],
     queryFn: async () => {
@@ -23,21 +22,6 @@ const BloodRequestPage = () => {
       return res.data;
     },
   });
-
-  const handleGiveBlood = async (id) => {
-    try {
-      const res = await axiosSecure.post(`/donations/accept/${id}`);
-      if (res.data?.insertedId || res.data?.success) {
-        toast.success("You have committed to donate!");
-        refetch();
-      } else {
-        toast.error(res.data?.message || "Could not accept the request.");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong.");
-    }
-  };
 
   if (isLoading) return <Loader />;
   if (isError)
@@ -48,7 +32,7 @@ const BloodRequestPage = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       {requests.length === 0 ? (
         <FeedbackMessage
           title="No Donation Requests Found"
@@ -56,14 +40,16 @@ const BloodRequestPage = () => {
         />
       ) : (
         <div>
-          <h1 className="text-3xl font-semibold text-primary flex items-center gap-2 mb-8">
-            <FaTint className="text-red-500" /> Blood Donation Requests
-          </h1>
+          <PageHeader
+            icon={BiDonateBlood}
+            title="Blood Donation Requests"
+            subtitle="View urgent blood donation requests and help save lives."
+          />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {requests.map((req) => (
               <div
                 key={req._id}
-                className="bg-primary/5 rounded-2xl p-5 space-y-2 backdrop-blur"
+                className="bg-primary/5 rounded-xl p-5 space-y-2 relative overflow-hidden"
               >
                 <p className="text-lg font-bold text-primary">
                   {req.recipientName}
@@ -71,6 +57,9 @@ const BloodRequestPage = () => {
                 <p>
                   <span className="font-medium">Blood Group:</span>{" "}
                   <span className="text-red-500">{req.bloodGroup}</span>
+                </p>
+                <p className="absolute -top-12 -right-6 text-9xl text-primary opacity-20 font-black tracking-tighter font-Sora">
+                  {req.bloodGroup}
                 </p>
                 <p>
                   <span className="font-medium">Location:</span> {req.district},{" "}
@@ -92,7 +81,7 @@ const BloodRequestPage = () => {
                 <div className="pt-1">
                   <Link
                     to={`${req._id}`}
-                    className="btn btn-xs btn-primary rounded-full text-base-200 shadow-none border-none"
+                    className="btn btn-sm rounded-xl text-secondary/80 shadow-none border-none hover:bg-primary/10"
                   >
                     View Details
                   </Link>

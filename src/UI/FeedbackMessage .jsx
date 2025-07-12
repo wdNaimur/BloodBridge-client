@@ -14,7 +14,7 @@ const FeedbackMessage = ({ title, message, buttonText, to }) => {
           <div className="text-center mt-2">
             <Link
               to={to}
-              className="btn btn-primary px-6 py-2 rounded-md text-base-200 border-none shadow-none"
+              className="btn rounded-xl px-6 py-2  text-base-200 border-none shadow-none"
             >
               {buttonText}
             </Link>

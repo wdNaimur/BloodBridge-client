@@ -12,6 +12,7 @@ import FundingPage from "../pages/Funding/FundingPage";
 import ProfilePage from "../pages/Dashboard/ProfilePage";
 import BloodRequestPage from "../pages/BloodRequest/BloodRequestPage";
 import BloodRequestDetails from "../pages/BloodRequest/BloodRequestDetails";
+import SearchPage from "../pages/Search/SearchPage";
 
 export const router = createBrowserRouter([
   {
@@ -43,7 +44,15 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
 
+      {
+        path: "/blog",
+        element: <div>Blog Page Placeholder</div>,
+      },
       {
         path: "/blog",
         element: <div>Blog Page Placeholder</div>,

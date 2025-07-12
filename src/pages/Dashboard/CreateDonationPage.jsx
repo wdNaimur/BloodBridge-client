@@ -320,9 +320,9 @@ const CreateDonationPage = () => {
         <div className="md:col-span-2 text-center pt-4">
           <button
             type="submit"
-            className="btn btn-primary px-8 w-full text-base-200"
+            className="btn rounded-xl btn-primary shadow-none border-none w-full text-base-200"
           >
-            Request
+            Create Request
           </button>
         </div>
       </form>
