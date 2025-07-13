@@ -9,7 +9,6 @@ const OverViewPage = () => {
   if (isRoleLoading) {
     return <Loader />;
   }
-  console.log(role);
   return (
     <div>
       {role === "donor" && <DonorOverview />}
