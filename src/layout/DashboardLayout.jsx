@@ -6,8 +6,10 @@ import useAuth from "../hooks/useAuth";
 import Loader from "../UI/Loader";
 import BloodBridgeLogo from "../components/shared/BloodBridgeLogo";
 import DashboardSideMenu from "../components/shared/DashboardSideMenu";
+import useRole from "../hooks/useRole";
 
 const DashBoardLayout = () => {
+  const [role, isRoleLoading] = useRole();
   useEffect(() => {
     document.title = "BloodBridge";
     window.scrollTo(0, 0);
@@ -19,7 +21,7 @@ const DashBoardLayout = () => {
     if (drawer) drawer.checked = false;
   };
 
-  if (loading) {
+  if (loading || isRoleLoading) {
     return <Loader />;
   }
 

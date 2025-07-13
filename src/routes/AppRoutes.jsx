@@ -15,6 +15,7 @@ import BloodRequestDetails from "../pages/BloodRequest/BloodRequestDetails";
 import SearchPage from "../pages/Search/SearchPage";
 import ManageUsersPage from "../pages/Dashboard/ManageUsersPage";
 import OverViewPage from "../pages/Dashboard/OverViewPage";
+import AdminRoute from "./AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -113,7 +114,9 @@ export const router = createBrowserRouter([
         path: "manage-users",
         element: (
           <PrivateRoute>
-            <ManageUsersPage />
+            <AdminRoute>
+              <ManageUsersPage />
+            </AdminRoute>
           </PrivateRoute>
         ),
       },

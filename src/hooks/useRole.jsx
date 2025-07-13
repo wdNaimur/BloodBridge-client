@@ -16,8 +16,6 @@ const useRole = () => {
     queryFn: fetchRole,
   });
   const role = data?.role;
-  console.log(role);
-
   return [role, isRoleLoading];
 };
 
