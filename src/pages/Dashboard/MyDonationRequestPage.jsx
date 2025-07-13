@@ -3,11 +3,13 @@ import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import DonationDetailsModal from "../../components/Modal/DonationDetailsModal";
 
 const MyDonationRequestPage = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const [selectedDonation, setSelectedDonation] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     data: donations = [],
@@ -27,7 +29,7 @@ const MyDonationRequestPage = () => {
 
   const handleDetails = (donation) => {
     setSelectedDonation(donation);
-    document.getElementById("donation_details_modal").showModal();
+    setIsModalOpen(true);
   };
 
   if (isLoading) {
@@ -64,13 +66,13 @@ const MyDonationRequestPage = () => {
             <thead className="bg-primary text-white">
               <tr>
                 <th>#</th>
-                <th>Recipient</th>
+                <th className="min-w-32">Recipient</th>
                 <th>District</th>
                 <th>Upazila</th>
-                <th>Hospital</th>
+                <th className="min-w-32">Hospital</th>
                 <th className="text-center">Blood Group</th>
-                <th className="text-center">Date</th>
-                <th className="text-center">Time</th>
+                <th className="text-center min-w-32">Date</th>
+                <th className="text-center min-w-24">Time</th>
                 <th className="text-center">Status</th>
                 <th className="text-center">Actions</th>
               </tr>
@@ -92,14 +94,14 @@ const MyDonationRequestPage = () => {
                 return (
                   <tr key={donation._id} className="text-secondary">
                     <td>{index + 1}</td>
-                    <td className="min-w-30">{donation.recipientName}</td>
-                    <td className="min-w-30">{donation.district}</td>
-                    <td className="min-w-36">{donation.upazila}</td>
-                    <td className="min-w-30">{donation.hospitalName}</td>
+                    <td>{donation.recipientName}</td>
+                    <td>{donation.district}</td>
+                    <td>{donation.upazila}</td>
+                    <td>{donation.hospitalName}</td>
                     <td className="text-center">{donation.bloodGroup}</td>
-                    <td className="min-w-28 text-center">{dateStr}</td>
-                    <td className="min-w-28 text-center">{timeStr}</td>
-                    <td className="min-w-28 text-center">
+                    <td className="text-center">{dateStr}</td>
+                    <td className="text-center">{timeStr}</td>
+                    <td className="text-center">
                       <span
                         className={`badge uppercase font-medium scale-90 ${
                           donation.status === "Approved"
@@ -112,7 +114,7 @@ const MyDonationRequestPage = () => {
                         {donation.status || "Not Found"}
                       </span>
                     </td>
-                    <td className="min-w-28 text-center">
+                    <td className="text-center">
                       <button
                         onClick={() => handleDetails(donation)}
                         className="btn rounded-xl btn-xs btn-outline btn-primary"
@@ -125,89 +127,14 @@ const MyDonationRequestPage = () => {
               })}
             </tbody>
           </table>
-          {/* Donation Details Modal */}
-          <dialog id="donation_details_modal" className="modal">
-            <div className="modal-box max-w-2xl">
-              <h3 className="font-bold text-lg mb-2 text-primary">
-                🩸 Donation Request Details
-              </h3>
-              {selectedDonation && (
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Recipient:
-                    </span>{" "}
-                    {selectedDonation.recipientName}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      District:
-                    </span>{" "}
-                    {selectedDonation.district}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Upazila:
-                    </span>{" "}
-                    {selectedDonation.upazila}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Hospital:
-                    </span>{" "}
-                    {selectedDonation.hospitalName}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Blood Group:
-                    </span>{" "}
-                    {selectedDonation.bloodGroup}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">Date:</span>{" "}
-                    {new Date(
-                      selectedDonation.donationDateTime
-                    ).toLocaleDateString("en-BD", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">Time:</span>{" "}
-                    {new Date(
-                      selectedDonation.donationDateTime
-                    ).toLocaleTimeString("en-BD", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                      hour12: true,
-                    })}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Status:
-                    </span>{" "}
-                    {selectedDonation.status || "Pending"}
-                  </p>
-                  <p>
-                    <span className="font-medium text-base-content">
-                      Message:
-                    </span>{" "}
-                    {selectedDonation.requestMessage || "No message"}
-                  </p>
-                </div>
-              )}
-              <div className="modal-action">
-                <form method="dialog">
-                  <button className="btn rounded-xl btn-secondary shadow-none  border-none text-base-100 btn-sm">
-                    Close
-                  </button>
-                </form>
-              </div>
-            </div>
-          </dialog>
         </div>
       )}
+
+      <DonationDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        donation={selectedDonation}
+      />
     </div>
   );
 };

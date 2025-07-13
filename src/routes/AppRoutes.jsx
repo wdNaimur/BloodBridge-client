@@ -14,6 +14,7 @@ import BloodRequestPage from "../pages/BloodRequest/BloodRequestPage";
 import BloodRequestDetails from "../pages/BloodRequest/BloodRequestDetails";
 import SearchPage from "../pages/Search/SearchPage";
 import ManageUsersPage from "../pages/Dashboard/ManageUsersPage";
+import OverViewPage from "../pages/Dashboard/OverViewPage";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +77,14 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      {
+        path: "",
+        element: (
+          <PrivateRoute>
+            <OverViewPage />
+          </PrivateRoute>
+        ),
+      },
       {
         path: "profile",
         element: (
