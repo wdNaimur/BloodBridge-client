@@ -50,7 +50,7 @@ const NavProfile = () => {
         onClick={() => setOpen(!open)}
         className="btn  btn-circle avatar cursor-pointer"
       >
-        <div className="w-10 rounded-full border-2 border-secondary">
+        <div className="rounded-full border-2 border-secondary">
           <img
             src={profileData?.image}
             alt={user?.displayName || "User Avatar"}

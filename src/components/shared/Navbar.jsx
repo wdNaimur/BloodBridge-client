@@ -139,8 +139,10 @@ const Navbar = () => {
           </div>
 
           {/*  Desktop Nav */}
-          <div className="navbar-center hidden lg:flex">
-            <ul className="space-x-3 flex text-base">{navLink}</ul>
+          <div className="navbar-center hidden lg:flex lg:flex-grow">
+            <ul className="space-x-3 flex text-base 2xl:ms-0 lg:ms-20 ms-0">
+              {navLink}
+            </ul>
           </div>
 
           {/*  User profile or sign-in button */}
