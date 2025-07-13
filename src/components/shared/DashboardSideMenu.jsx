@@ -41,7 +41,7 @@ const DashboardSideMenu = ({ handleNavClick }) => {
     navLinks = [
       { name: "Overview", path: "/dashboard", end: true },
       { name: "Profile", path: "/dashboard/profile" },
-      { name: "User Management", path: "/dashboard/users" },
+      { name: "User Management", path: "/dashboard/manage-users" },
       { name: "Manage Blogs", path: "/dashboard/blogs" },
       { name: "Funding Panel", path: "/dashboard/funding" },
     ];

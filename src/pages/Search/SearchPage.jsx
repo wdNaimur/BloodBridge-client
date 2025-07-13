@@ -21,7 +21,6 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [initialState, setInitialState] = useState(true);
-  console.log(donors);
   const handleDistrictChange = (id) => {
     setDistrictId(id);
     setUpazila("");

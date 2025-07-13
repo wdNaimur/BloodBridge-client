@@ -13,6 +13,7 @@ import ProfilePage from "../pages/Dashboard/ProfilePage";
 import BloodRequestPage from "../pages/BloodRequest/BloodRequestPage";
 import BloodRequestDetails from "../pages/BloodRequest/BloodRequestDetails";
 import SearchPage from "../pages/Search/SearchPage";
+import ManageUsersPage from "../pages/Dashboard/ManageUsersPage";
 
 export const router = createBrowserRouter([
   {
@@ -96,6 +97,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyDonationRequestPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <PrivateRoute>
+            <ManageUsersPage />
           </PrivateRoute>
         ),
       },
