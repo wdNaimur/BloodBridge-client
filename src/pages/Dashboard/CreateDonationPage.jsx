@@ -3,12 +3,16 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useStatus from "../../hooks/useStatus";
+import Loader from "../../UI/Loader";
 
 const CreateDonationPage = () => {
   const axiosSecure = useAxiosSecure();
   const [districts, setDistricts] = useState([]);
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [upazilas, setUpazilas] = useState([]);
+  const [status, isStatusLoading] = useStatus();
+  console.log(status);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const { user } = useAuth();
@@ -58,6 +62,11 @@ const CreateDonationPage = () => {
   }, [selectedDistrictId]);
 
   const onSubmit = async (data) => {
+    if (status !== "active") {
+      return toast.error(
+        "Your account is currently blocked and cannot create donation requests. Please contact support for assistance."
+      );
+    }
     const selectedDistrict = districts.find((d) => d.id === data.district);
 
     const donationDateTime = new Date(
@@ -92,7 +101,9 @@ const CreateDonationPage = () => {
       toast.error("Failed to create donation request.");
     }
   };
-
+  if (isStatusLoading) {
+    return <Loader />;
+  }
   return (
     <div className="mx-auto bg-base-200 rounded-xl overflow-hidden shadow-xl shadow-primary/5">
       <div className="text-center text-base-100 py-6 px-6 bg-primary">
