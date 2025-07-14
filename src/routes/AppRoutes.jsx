@@ -17,6 +17,7 @@ import ManageUsersPage from "../pages/Dashboard/ManageUsersPage";
 import OverViewPage from "../pages/Dashboard/OverViewPage";
 import AdminRoute from "./AdminRoute";
 import UpdateDonationPage from "../pages/Dashboard/UpdateDonationPage";
+import AllDonationPage from "../pages/Dashboard/AllDonationPage";
 
 export const router = createBrowserRouter([
   {
@@ -116,6 +117,16 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyDonationRequestPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "all-blood-donation-request",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <AllDonationPage />
+            </AdminRoute>
           </PrivateRoute>
         ),
       },

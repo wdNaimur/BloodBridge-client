@@ -5,12 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useRole from "../../hooks/useRole";
+import Loader from "../../UI/Loader";
 
 const UpdateDonationPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const [role, isRoleLoading] = useRole();
 
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
@@ -50,7 +53,9 @@ const UpdateDonationPage = () => {
     queryKey: ["donation-request", id],
     enabled: !!id,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/my-donations-request/${id}`);
+      const res = await axiosSecure.get(
+        `/donations-request/${id}?role=${role}`
+      );
       return res.data;
     },
   });
@@ -115,12 +120,17 @@ const UpdateDonationPage = () => {
     };
     try {
       const res = await axiosSecure.patch(
-        `/my-donations-request//${id}`,
+        `/donations-request/${id}?role=${role}`,
         updatedData
       );
       if (res.data.modifiedCount > 0) {
         toast.success("Donation request updated");
-        navigate("/dashboard");
+        {
+          role === "donor" && navigate("/dashboard/my-donation-request");
+        }
+        {
+          role === "admin" && navigate("/dashboard/all-blood-donation-request");
+        }
       } else {
         toast.error("No changes were made.");
       }
@@ -130,12 +140,8 @@ const UpdateDonationPage = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="text-center py-20 text-lg font-semibold text-gray-500">
-        Loading donation data...
-      </div>
-    );
+  if (isLoading || isRoleLoading) {
+    return <Loader />;
   }
 
   if (isError || !formData) {

@@ -3,14 +3,22 @@ import DonorOverview from "../../components/Overview/DonorOverview";
 import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";
 import AdminOverview from "../../components/Overview/AdminOverview";
+import useAuth from "../../hooks/useAuth";
 
 const OverViewPage = () => {
   const [role, isRoleLoading] = useRole();
+  const { user } = useAuth();
   if (isRoleLoading) {
     return <Loader />;
   }
   return (
     <div>
+      <div className="mb-6 text-primary max-w-3xl">
+        <h1 className="text-3xl font-bold mb-2">
+          <span className="text-secondary">Welcome back,</span> <br />{" "}
+          {user.displayName}!
+        </h1>
+      </div>
       {role === "donor" && <DonorOverview />}
       {role === "admin" && <AdminOverview />}
     </div>

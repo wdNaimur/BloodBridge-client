@@ -3,11 +3,14 @@ import { Dialog, Transition } from "@headlessui/react";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQueryClient } from "@tanstack/react-query";
+import useRole from "../../hooks/useRole";
+import Loader from "../../UI/Loader";
 
 const DeleteDonationModal = ({ isOpen, onClose, donationId }) => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [role, isRoleLoading] = useRole();
 
   useEffect(() => {
     if (!isOpen) {
@@ -24,7 +27,7 @@ const DeleteDonationModal = ({ isOpen, onClose, donationId }) => {
     setIsDeleting(true);
     try {
       const res = await axiosSecure.delete(
-        `/my-donations-request/${donationId}`
+        `/donations-request/${donationId}?role=${role}`
       );
       if (res.status === 200) {
         toast.success("Donation request deleted successfully.");
@@ -40,6 +43,9 @@ const DeleteDonationModal = ({ isOpen, onClose, donationId }) => {
       setIsDeleting(false);
     }
   };
+  if (isRoleLoading) {
+    return <Loader />;
+  }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -83,7 +89,7 @@ const DeleteDonationModal = ({ isOpen, onClose, donationId }) => {
 
                   <button
                     type="button"
-                    className="btn btn-error rounded-xl flex-1 text-base-200 shadow-none border-none"
+                    className="btn btn-primary rounded-xl flex-1 text-base-200 shadow-none border-none"
                     onClick={handleDelete}
                     disabled={isDeleting}
                   >

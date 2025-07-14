@@ -55,19 +55,9 @@ const DonorOverviewPage = () => {
 
   return (
     <div>
-      <div className="mb-6 text-primary max-w-3xl">
-        <h1 className="text-3xl font-bold mb-2">
-          <span className="text-secondary">Welcome back,</span> <br />{" "}
-          {user.displayName}!
-        </h1>
-        <p className="text-lg opacity-80 text-secondary">
-          Here’s a quick overview of your recent blood donation activities.
-        </p>
-      </div>
       <h2 className="text-2xl font-semibold mb-6">
         🩸 Your Recent Donation Requests
       </h2>
-
       {donations.length === 0 ? (
         <p className="text-secondary">You have no recent donation requests.</p>
       ) : (

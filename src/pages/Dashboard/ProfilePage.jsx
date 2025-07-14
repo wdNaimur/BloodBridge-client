@@ -5,12 +5,13 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Loader from "../../UI/Loader";
 import toast from "react-hot-toast";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaUserCircle } from "react-icons/fa";
 import { FiCamera } from "react-icons/fi";
 import DistrictUpazilaSelect from "../../components/shared/DistrictUpazilaSelect";
 import useDistrictName from "../../hooks/useDistrictName";
 import { motion } from "motion/react";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
+import DashboardHeader from "../../UI/DashboardHeader";
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -107,14 +108,11 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <div className="mb-6 border-b-2 border-dashed border-secondary/20">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
-          My Profile
-        </h1>
-        <p className="text-secondary opacity-80 max-w-xl mb-4">
-          View and manage your personal information securely.
-        </p>
-      </div>
+      <DashboardHeader
+        title="My Profile"
+        subtitle="View and manage your personal information securely."
+        icon={<FaUserCircle />}
+      />
 
       <motion.form
         layout

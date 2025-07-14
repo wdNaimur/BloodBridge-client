@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import DeleteDonationModal from "../Modal/DeleteDonationModal";
 
-const DonationsTable = ({ donations, onDetailsClick, onDelete }) => {
+const DonationsTable = ({ donations, onDetailsClick }) => {
   // Correct state variable names for modal control
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -17,15 +17,6 @@ const DonationsTable = ({ donations, onDetailsClick, onDelete }) => {
   const handleDeleteClick = (donation) => {
     setSelectedId(donation._id);
     setModalOpen(true);
-  };
-
-  // The onDelete is expected to handle the actual deletion logic (refresh data, etc.)
-  const confirmDelete = (id) => {
-    if (onDelete) {
-      onDelete(id);
-    }
-    setModalOpen(false);
-    setSelectedId(null);
   };
 
   if (!donations || donations.length === 0) {
