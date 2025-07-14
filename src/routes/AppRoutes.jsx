@@ -18,6 +18,8 @@ import OverViewPage from "../pages/Dashboard/OverViewPage";
 import AdminRoute from "./AdminRoute";
 import UpdateDonationPage from "../pages/Dashboard/UpdateDonationPage";
 import AllDonationPage from "../pages/Dashboard/AllDonationPage";
+import ContentManagementPage from "../pages/Dashboard/ContentManagementPage";
+import AddBlogPage from "../pages/Dashboard/AddBlogPage";
 
 export const router = createBrowserRouter([
   {
@@ -136,6 +138,26 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <AdminRoute>
               <ManageUsersPage />
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "content-management",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ContentManagementPage />
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "content-management/add-blog",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <AddBlogPage />
             </AdminRoute>
           </PrivateRoute>
         ),

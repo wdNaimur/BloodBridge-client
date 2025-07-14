@@ -46,7 +46,7 @@ const DashboardSideMenu = ({ handleNavClick }) => {
         name: "All Blood Donation Request",
         path: "/dashboard/all-blood-donation-request",
       },
-      { name: "Manage Blogs", path: "/dashboard/blogs" },
+      { name: "Content Management", path: "/dashboard/content-management" },
       { name: "Funding Panel", path: "/dashboard/funding" },
     ];
   } else if (role === "volunteer") {
