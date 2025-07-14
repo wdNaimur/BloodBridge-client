@@ -16,6 +16,7 @@ import SearchPage from "../pages/Search/SearchPage";
 import ManageUsersPage from "../pages/Dashboard/ManageUsersPage";
 import OverViewPage from "../pages/Dashboard/OverViewPage";
 import AdminRoute from "./AdminRoute";
+import UpdateDonationPage from "../pages/Dashboard/UpdateDonationPage";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +100,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <CreateDonationPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "update-donation-request/:id",
+        element: (
+          <PrivateRoute>
+            <UpdateDonationPage />
           </PrivateRoute>
         ),
       },

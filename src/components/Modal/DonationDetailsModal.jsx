@@ -249,8 +249,8 @@ const DonationDetailsModal = ({ isOpen, onClose, donation }) => {
       <Transition appear show={showConfirmModal} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-50"
-          onClose={() => setShowConfirmModal(false)}
+          className="relative z-50 focus:outline-none"
+          onClose={() => !updating && setShowConfirmModal(false)}
         >
           <Transition.Child
             as={Fragment}
@@ -275,35 +275,36 @@ const DonationDetailsModal = ({ isOpen, onClose, donation }) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-base-100 p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title className="text-lg font-medium text-error">
+                <Dialog.Panel className="w-full max-w-md rounded-xl bg-secondary/90 p-6 backdrop-blur-2xl shadow-xl text-left align-middle">
+                  <Dialog.Title className="text-lg font-semibold text-error">
                     Confirm{" "}
                     {confirmStatus === "done" ? "Completion" : "Cancellation"}
                   </Dialog.Title>
-                  <div className="mt-4">
-                    <p className="text-sm text-secondary">
-                      Are you sure you want to{" "}
-                      <span className="font-semibold text-error">
-                        {confirmStatus === "done"
-                          ? "mark this request as done"
-                          : "cancel this request"}
-                      </span>
-                      ?
-                    </p>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-3">
+
+                  <p className="mt-4 text-sm text-base-100/80">
+                    Are you sure you want to{" "}
+                    <span className="font-semibold text-error">
+                      {confirmStatus === "done"
+                        ? "mark this request as done"
+                        : "cancel this request"}
+                    </span>
+                    ?
+                  </p>
+
+                  <div className="mt-6 flex justify-end gap-4">
                     <button
-                      className="btn btn-sm btn-ghost"
-                      onClick={() => setShowConfirmModal(false)}
+                      className="btn btn-secondary rounded-xl flex-1 text-base-200 shadow-none border-none btn-sm"
+                      onClick={() => !updating && setShowConfirmModal(false)}
+                      disabled={updating}
                     >
                       No, Go Back
                     </button>
                     <button
                       onClick={confirmAndUpdate}
                       disabled={updating}
-                      className="btn btn-sm btn-error text-base-100"
+                      className="btn btn-error rounded-xl flex-1 text-base-200 shadow-none border-none btn-sm"
                     >
-                      Yes, Confirm
+                      {updating ? "Processing..." : "Yes, Confirm"}
                     </button>
                   </div>
                 </Dialog.Panel>
