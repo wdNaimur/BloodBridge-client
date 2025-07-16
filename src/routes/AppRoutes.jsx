@@ -21,6 +21,7 @@ import AllDonationPage from "../pages/Dashboard/AllDonationPage";
 import ContentManagementPage from "../pages/Dashboard/ContentManagementPage";
 import AddBlogPage from "../pages/Dashboard/AddBlogPage";
 import BlogEditPage from "../pages/Dashboard/BlogEditPage";
+import AdminOrVolunteerRoute from "./AdminOrVolunteerRoute";
 
 export const router = createBrowserRouter([
   {
@@ -87,7 +88,9 @@ export const router = createBrowserRouter([
         path: "",
         element: (
           <PrivateRoute>
-            <OverViewPage />
+            <AdminOrVolunteerRoute>
+              <OverViewPage />
+            </AdminOrVolunteerRoute>
           </PrivateRoute>
         ),
       },

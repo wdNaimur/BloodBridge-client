@@ -1,19 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { FaPlus } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { MdDelete, MdEdit } from "react-icons/md";
+import DeleteBlogModal from "../../components/Modal/DeleteBlogModal";
+import PublishBlogModal from "../../components/Modal/PublishBlogModal";
+import useRole from "../../hooks/useRole";
 
 const ContentManagementPage = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const [role, isRoleLoading] = useRole();
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [selectedBlogId, setSelectedBlogId] = useState(null);
+  const [selectedAction, setSelectedAction] = useState("publish");
 
   const {
     data: blogs = [],
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["blogs"],
     queryFn: async () => {
@@ -22,13 +32,25 @@ const ContentManagementPage = () => {
     },
   });
 
-  const handleAddBlog = () => {
+  const handleAddBlog = () =>
     navigate("/dashboard/content-management/add-blog");
+
+  const handleDeleteClick = (id) => {
+    setSelectedBlogId(id);
+    setIsDeleteModalOpen(true);
   };
+
+  const handleStatusClick = (id, action) => {
+    setSelectedBlogId(id);
+    setSelectedAction(action); // 'publish' or 'unpublish'
+    setIsPublishModalOpen(true);
+  };
+
+  if (isRoleLoading) return <div className="text-center">Loading role...</div>;
 
   return (
     <>
-      {/* Header section with Add Blog button */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-6 bg-base-200 p-6 rounded-xl shadow-xl shadow-primary/5">
         <h2 className="text-2xl font-bold text-primary">Content Management</h2>
         <button
@@ -40,7 +62,7 @@ const ContentManagementPage = () => {
         </button>
       </div>
 
-      {/* Content based on query states */}
+      {/* Blog Grid */}
       {isLoading ? (
         <div className="text-center text-secondary">Loading blogs...</div>
       ) : isError ? (
@@ -56,22 +78,37 @@ const ContentManagementPage = () => {
           {blogs.map((blog) => (
             <div
               key={blog._id}
-              className="bg-base-200 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer shadow-primary/5 relative"
+              className="bg-base-200 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer shadow-primary/5 relative flex flex-col"
             >
               <img
                 src={blog.thumbnailUrl || blog.thumbnail}
                 alt={blog.title}
                 className="w-full h-40 object-cover rounded-t-md bg-secondary/30"
               />
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-1">
                 <h3 className="text-base font-medium text-secondary mb-1">
                   {blog.title}
                 </h3>
-                <button className="btn btn-primary rounded-lg shadow-none border-none btn-sm text-base-200 capitalize w-full">
-                  publish
-                </button>
+
+                {/* Admin-only buttons */}
+                {role === "admin" && (
+                  <button
+                    className={`btn ${
+                      blog.status === "draft" ? "btn-primary" : "btn-warning"
+                    } rounded-lg shadow-none border-none btn-sm text-base-200 capitalize w-full mt-auto`}
+                    onClick={() =>
+                      handleStatusClick(
+                        blog._id,
+                        blog.status === "draft" ? "publish" : "unpublish"
+                      )
+                    }
+                  >
+                    {blog.status === "draft" ? "Publish" : "Unpublish"}
+                  </button>
+                )}
               </div>
 
+              {/* Edit & Delete */}
               <div>
                 <Link
                   to={`/dashboard/content-management/blog/${blog._id}`}
@@ -79,7 +116,10 @@ const ContentManagementPage = () => {
                 >
                   <MdEdit />
                 </Link>
-                <button className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300">
+                <button
+                  onClick={() => handleDeleteClick(blog._id)}
+                  className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300"
+                >
                   <MdDelete />
                 </button>
               </div>
@@ -87,6 +127,27 @@ const ContentManagementPage = () => {
           ))}
         </div>
       )}
+
+      {/* Modals */}
+      <DeleteBlogModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedBlogId(null);
+        }}
+        blogId={selectedBlogId}
+      />
+
+      <PublishBlogModal
+        isOpen={isPublishModalOpen}
+        onClose={() => {
+          setIsPublishModalOpen(false);
+          setSelectedBlogId(null);
+          refetch();
+        }}
+        blogId={selectedBlogId}
+        action={selectedAction} // pass 'publish' or 'unpublish'
+      />
     </>
   );
 };

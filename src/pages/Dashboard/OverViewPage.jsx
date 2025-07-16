@@ -7,6 +7,7 @@ import useAuth from "../../hooks/useAuth";
 
 const OverViewPage = () => {
   const [role, isRoleLoading] = useRole();
+  console.log(role);
   const { user } = useAuth();
   if (isRoleLoading) {
     return <Loader />;
@@ -21,6 +22,7 @@ const OverViewPage = () => {
       </div>
       {role === "donor" && <DonorOverview />}
       {role === "admin" && <AdminOverview />}
+      {role === "volunteer" && <AdminOverview />}
     </div>
   );
 };
