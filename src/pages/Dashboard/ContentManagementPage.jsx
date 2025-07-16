@@ -116,12 +116,14 @@ const ContentManagementPage = () => {
                 >
                   <MdEdit />
                 </Link>
-                <button
-                  onClick={() => handleDeleteClick(blog._id)}
-                  className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300"
-                >
-                  <MdDelete />
-                </button>
+                {role === "admin" && (
+                  <button
+                    onClick={() => handleDeleteClick(blog._id)}
+                    className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300"
+                  >
+                    <MdDelete />
+                  </button>
+                )}
               </div>
             </div>
           ))}

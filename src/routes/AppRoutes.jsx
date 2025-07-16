@@ -22,6 +22,7 @@ import ContentManagementPage from "../pages/Dashboard/ContentManagementPage";
 import AddBlogPage from "../pages/Dashboard/AddBlogPage";
 import BlogEditPage from "../pages/Dashboard/BlogEditPage";
 import AdminOrVolunteerRoute from "./AdminOrVolunteerRoute";
+import BlogPage from "../pages/Blog/BlogPage";
 
 export const router = createBrowserRouter([
   {
@@ -60,12 +61,9 @@ export const router = createBrowserRouter([
 
       {
         path: "/blog",
-        element: <div>Blog Page Placeholder</div>,
+        element: <BlogPage />,
       },
-      {
-        path: "/blog",
-        element: <div>Blog Page Placeholder</div>,
-      },
+
       {
         path: "/funding",
         element: (
@@ -130,9 +128,9 @@ export const router = createBrowserRouter([
         path: "all-blood-donation-request",
         element: (
           <PrivateRoute>
-            <AdminRoute>
+            <AdminOrVolunteerRoute>
               <AllDonationPage />
-            </AdminRoute>
+            </AdminOrVolunteerRoute>
           </PrivateRoute>
         ),
       },
@@ -150,9 +148,9 @@ export const router = createBrowserRouter([
         path: "content-management",
         element: (
           <PrivateRoute>
-            <AdminRoute>
+            <AdminOrVolunteerRoute>
               <ContentManagementPage />
-            </AdminRoute>
+            </AdminOrVolunteerRoute>
           </PrivateRoute>
         ),
       },
@@ -160,9 +158,9 @@ export const router = createBrowserRouter([
         path: "content-management/add-blog",
         element: (
           <PrivateRoute>
-            <AdminRoute>
+            <AdminOrVolunteerRoute>
               <AddBlogPage />
-            </AdminRoute>
+            </AdminOrVolunteerRoute>
           </PrivateRoute>
         ),
       },
@@ -170,9 +168,9 @@ export const router = createBrowserRouter([
         path: "/dashboard/content-management/blog/:id",
         element: (
           <PrivateRoute>
-            <AdminRoute>
+            <AdminOrVolunteerRoute>
               <BlogEditPage />
-            </AdminRoute>
+            </AdminOrVolunteerRoute>
           </PrivateRoute>
         ),
       },

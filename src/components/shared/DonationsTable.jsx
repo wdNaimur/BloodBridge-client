@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import DeleteDonationModal from "../Modal/DeleteDonationModal";
+import useRole from "../../hooks/useRole";
 
 const DonationsTable = ({ donations, onDetailsClick }) => {
   // Correct state variable names for modal control
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [role, isRoleLoading] = useRole();
 
   const statusClassMap = {
     pending: "badge-warning",
@@ -105,18 +107,23 @@ const DonationsTable = ({ donations, onDetailsClick }) => {
                       >
                         Details
                       </button>
-                      <Link
-                        to={`/dashboard/update-donation-request/${donation._id}`}
-                        className="btn rounded-xl btn-xs btn-outline btn-primary hover:text-base-200"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteClick(donation)}
-                        className="btn rounded-xl btn-xs btn-outline btn-error"
-                      >
-                        Delete
-                      </button>
+                      {role === "admin" && (
+                        <Link
+                          to={`/dashboard/update-donation-request/${donation._id}`}
+                          className="btn rounded-xl btn-xs btn-outline btn-primary hover:text-base-200"
+                        >
+                          Edit
+                        </Link>
+                      )}
+
+                      {role === "admin" && (
+                        <button
+                          onClick={() => handleDeleteClick(donation)}
+                          className="btn rounded-xl btn-xs btn-outline btn-error"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </span>
                   </td>
                 </tr>

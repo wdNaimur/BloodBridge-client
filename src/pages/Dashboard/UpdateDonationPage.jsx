@@ -103,7 +103,6 @@ const UpdateDonationPage = () => {
       });
     }
   }, [formData, upazilas, selectedDistrictId, reset]);
-  console.log("formData", formData);
   const onSubmit = async (data) => {
     const selectedDistrict = districts.find((d) => d.id === data.district);
     const donationDateTime = new Date(

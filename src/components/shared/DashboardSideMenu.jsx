@@ -52,7 +52,11 @@ const DashboardSideMenu = ({ handleNavClick }) => {
     navLinks = [
       { name: "Overview", path: "/dashboard", end: true },
       { name: "Profile", path: "/dashboard/profile" },
-      { name: "Manage Donation Requests", path: "/dashboard/manage-donations" },
+      {
+        name: "All Blood Donation Request",
+        path: "/dashboard/all-blood-donation-request",
+      },
+      { name: "Content Management", path: "/dashboard/content-management" },
     ];
   }
 

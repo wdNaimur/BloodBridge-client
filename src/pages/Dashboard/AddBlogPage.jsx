@@ -4,12 +4,14 @@ import JoditEditor from "jodit-react";
 import toast from "react-hot-toast";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router";
 
 const AddBlogPage = () => {
   const { register, handleSubmit, reset } = useForm();
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
 
   const handleBlogSubmit = async (data) => {
@@ -31,11 +33,12 @@ const AddBlogPage = () => {
       };
 
       const res = await axiosSecure.post("/blogs", blogData);
-      console.log(res);
 
       if (res.data.blogId) {
         toast.success("Blog created successfully!");
+        navigate("/dashboard/content-management");
         reset();
+
         setContent("");
       } else {
         toast.error("Failed to create blog");

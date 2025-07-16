@@ -31,7 +31,6 @@ const MyDonationRequestPage = () => {
     },
   });
 
-  console.log(selectedStatus);
   const handleDetails = (donation) => {
     setSelectedDonation(donation);
     setIsModalOpen(true);

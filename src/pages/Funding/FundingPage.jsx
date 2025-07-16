@@ -5,35 +5,30 @@ import toast from "react-hot-toast";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import FundingForm from "./FundingForm";
+import { useQuery } from "@tanstack/react-query";
+import useRole from "../../hooks/useRole";
+import Loader from "../../UI/Loader";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK_KEY);
 
 const FundingPage = () => {
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK_KEY);
-  const [fundings, setFundings] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const [admin, setAdmin] = useState(false);
-
   const [selectedAmount, setSelectedAmount] = useState("");
   const [customAmount, setCustomAmount] = useState("");
-
   const axiosSecure = useAxiosSecure();
+  const [role, isRoleLoading] = useRole();
 
-  useEffect(() => {
-    if (admin) {
-      axiosSecure
-        .get("/fundings")
-        .then((res) => setFundings(res.data))
-        .catch(() => toast.error("Failed to fetch fundings"));
-    }
-  }, [axiosSecure, admin]);
+  // Fetch all fundings
+  const { data: fundings = [], isLoading } = useQuery({
+    queryKey: ["fundings"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/fundings");
+      return res.data;
+    },
+  });
 
-  const totalPages = Math.ceil(fundings.length / itemsPerPage);
-  const paginatedData = fundings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // Calculate total
+  const totalFund = fundings.reduce((acc, curr) => acc + curr.amount, 0);
 
-  // Determine final donation amount
   const getFinalAmount = () => {
     if (selectedAmount === "custom") {
       return customAmount ? parseFloat(customAmount) : "";
@@ -49,7 +44,9 @@ const FundingPage = () => {
       document.getElementById("my_modal_3").showModal();
     }
   };
-
+  if (isRoleLoading) {
+    return <Loader />;
+  }
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 min-h-screen">
       <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
@@ -61,7 +58,7 @@ const FundingPage = () => {
         and living.
       </p>
 
-      {/* Donation Options */}
+      {/* Donation UI */}
       <div className="mb-4">
         <p className="font-medium text-secondary mb-2 text-xl">
           Choose a donation amount:
@@ -76,7 +73,7 @@ const FundingPage = () => {
                 type="radio"
                 name="donation"
                 value={amount}
-                className="radio radio-primary cursor-pointer"
+                className="radio radio-primary"
                 checked={selectedAmount === `${amount}`}
                 onChange={(e) => {
                   setSelectedAmount(e.target.value);
@@ -87,19 +84,17 @@ const FundingPage = () => {
             </label>
           ))}
           <div className=" flex gap-2">
-            {/* Custom Radio */}
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
                 name="donation"
                 value="custom"
-                className="radio radio-primary cursor-pointer"
+                className="radio radio-primary"
                 checked={selectedAmount === "custom"}
                 onChange={() => setSelectedAmount("custom")}
               />
               <span>Custom:</span>
             </label>
-            {/* Custom Input Box */}
             {selectedAmount === "custom" && (
               <input
                 type="number"
@@ -114,21 +109,20 @@ const FundingPage = () => {
         </div>
       </div>
 
-      {/* Trigger Donate Modal */}
       <div className="mb-8">
         <button
           onClick={handleDonateClick}
-          className="btn rounded-xl btn-primary   text-base-200 cursor-pointer shadow-none border-none"
+          className="btn rounded-xl btn-primary text-base-200"
         >
           Contribute to BloodBridge
         </button>
       </div>
 
-      {/* Donation Modal */}
+      {/* Stripe Modal */}
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box">
           <form method="dialog">
-            <button className="btn btn-sm hover:bg-secondary/5 border-none shadow-lg shadow-primary/5 btn-circle absolute right-2 top-2">
+            <button className="btn btn-sm btn-circle absolute right-2 top-2">
               ✕
             </button>
           </form>
@@ -139,76 +133,51 @@ const FundingPage = () => {
         </div>
       </dialog>
 
-      {/* ADMIN: Total Raised + Table */}
-      {admin && (
-        <div>
-          <div className="bg-primary/10 border-l-4 border-primary p-4 rounded-md mb-6 text-primary font-medium shadow">
-            Total Raised: $
-            {fundings
-              .reduce((acc, curr) => acc + parseFloat(curr.amount), 0)
-              .toFixed(2)}
+      {/* Total Fund Summary */}
+      {role == "admin" ||
+        (role == "volunteer" && (
+          <div className="text-right text-lg font-semibold mt-10 mb-3">
+            Total Raised: <span className="text-primary">৳{totalFund}</span>
           </div>
+        ))}
 
-          {/* Table */}
-          <div className="overflow-x-auto shadow rounded-lg border border-gray-200">
-            <table className="min-w-full bg-white">
-              <thead className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-                <tr>
-                  <th className="px-6 py-4">#</th>
-                  <th className="px-6 py-4">Donor Name</th>
-                  <th className="px-6 py-4">Amount (USD)</th>
-                  <th className="px-6 py-4">Date</th>
+      {/* Funding Table */}
+      <div className="overflow-x-auto bg-base-100 rounded-xl shadow">
+        <table className="table">
+          <thead>
+            <tr className="bg-primary text-base-100">
+              <th>#</th>
+              <th>Donor Name</th>
+              <th>Amount (৳)</th>
+              <th>Funding Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={4} className="text-center py-10">
+                  Loading fundings...
+                </td>
+              </tr>
+            ) : fundings.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-10">
+                  No donations yet.
+                </td>
+              </tr>
+            ) : (
+              fundings.map((fund, index) => (
+                <tr key={fund._id}>
+                  <td>{index + 1}</td>
+                  <td>{fund.name}</td>
+                  <td>৳{fund.amount}</td>
+                  <td>{new Date(fund.createdAt).toLocaleDateString()}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {paginatedData.map((fund, idx) => (
-                  <tr key={fund._id} className="border-b text-sm">
-                    <td className="px-6 py-3">
-                      {(currentPage - 1) * itemsPerPage + idx + 1}
-                    </td>
-                    <td className="px-6 py-3">
-                      {fund.donorName || "Anonymous"}
-                    </td>
-                    <td className="px-6 py-3">${fund.amount}</td>
-                    <td className="px-6 py-3">
-                      {new Date(fund.date).toLocaleDateString("en-US")}
-                    </td>
-                  </tr>
-                ))}
-                {paginatedData.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="px-6 py-4 text-center text-gray-500"
-                    >
-                      No funding records found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-6 gap-2">
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentPage(idx + 1)}
-                  className={`px-3 py-1 rounded-md border ${
-                    currentPage === idx + 1
-                      ? "bg-rose-600 text-white"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
-                >
-                  {idx + 1}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -30,8 +30,6 @@ const AllDonationPage = () => {
       return res.data;
     },
   });
-
-  console.log(selectedStatus);
   const handleDetails = (donation) => {
     setSelectedDonation(donation);
     setIsModalOpen(true);
@@ -73,7 +71,7 @@ const AllDonationPage = () => {
             <option value="pending">Pending</option>
             <option value="inprogress">In Progress</option>
             <option value="done">Done</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="canceled">Cancelled</option>
           </select>
 
           {/* Arrow Icon Overlay */}

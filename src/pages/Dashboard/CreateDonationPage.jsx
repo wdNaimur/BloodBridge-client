@@ -12,7 +12,6 @@ const CreateDonationPage = () => {
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [upazilas, setUpazilas] = useState([]);
   const [status, isStatusLoading] = useStatus();
-  console.log(status);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const { user } = useAuth();

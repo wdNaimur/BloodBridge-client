@@ -19,7 +19,6 @@ const useStatus = () => {
   });
 
   const status = data?.status;
-  console.log(status);
   return [status, isStatusLoading];
 };
 

@@ -3,7 +3,6 @@ import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import Loader from "../../UI/Loader";
 
 const NavProfile = () => {
   const { user, logOut } = useAuth();
@@ -20,7 +19,6 @@ const NavProfile = () => {
     queryKey: ["user", user.email],
     queryFn: fetchUser,
   });
-  console.log(profileData);
 
   const handleSignOut = () => {
     logOut();
@@ -40,7 +38,7 @@ const NavProfile = () => {
     };
   }, []);
   if (isLoading) {
-    return <Loader />;
+    return <span className="loading loading-spinner text-primary"></span>;
   }
 
   return (

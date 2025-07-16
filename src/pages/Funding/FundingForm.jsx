@@ -4,12 +4,14 @@ import "./card.css";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 const FundingForm = ({ amount }) => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const stripe = useStripe();
   const elements = useElements();
+  const queryClient = useQueryClient();
 
   const [cardError, setCardError] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -94,7 +96,7 @@ const FundingForm = ({ amount }) => {
     }
 
     if (paymentIntent.status === "succeeded") {
-      console.log("Payment successful:", paymentIntent);
+      console.log("Payment successful");
 
       // Save donation data to backend
       const donationData = {
@@ -110,6 +112,7 @@ const FundingForm = ({ amount }) => {
         const res = await axiosSecure.post("/funding-donations", donationData);
         if (res.data.insertedId) {
           toast.success("Thank you for your donation!");
+          await queryClient.invalidateQueries(["fundings"]);
         } else {
           toast.error("Payment succeeded, but failed to record donation.");
         }

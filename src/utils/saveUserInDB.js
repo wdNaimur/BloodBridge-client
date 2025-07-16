@@ -6,7 +6,6 @@ const saveUserInDB = async (user) => {
     `${import.meta.env.VITE_API_URL}/user`,
     user
   );
-  console.log(data);
 };
 
 export default saveUserInDB;
