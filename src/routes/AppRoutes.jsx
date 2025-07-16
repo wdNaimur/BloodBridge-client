@@ -20,6 +20,7 @@ import UpdateDonationPage from "../pages/Dashboard/UpdateDonationPage";
 import AllDonationPage from "../pages/Dashboard/AllDonationPage";
 import ContentManagementPage from "../pages/Dashboard/ContentManagementPage";
 import AddBlogPage from "../pages/Dashboard/AddBlogPage";
+import BlogEditPage from "../pages/Dashboard/BlogEditPage";
 
 export const router = createBrowserRouter([
   {
@@ -158,6 +159,16 @@ export const router = createBrowserRouter([
           <PrivateRoute>
             <AdminRoute>
               <AddBlogPage />
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/content-management/blog/:id",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <BlogEditPage />
             </AdminRoute>
           </PrivateRoute>
         ),

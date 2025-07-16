@@ -45,6 +45,7 @@ const ManageUsersTable = ({ user, onOpen }) => {
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
                 <img
+                  className="bg-primary/30"
                   src={user.image || "https://ibb.co/WW3mZGnd"}
                   alt={user.name}
                 />

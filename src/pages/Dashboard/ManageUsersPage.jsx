@@ -7,6 +7,7 @@ import ManageUsersTable from "../../components/ManageUsers/ManageUsersTable";
 import { FaUsersCog } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import DashboardHeader from "../../UI/DashboardHeader";
+import TableLoader from "../../UI/TableLoader";
 
 const ManageUsersPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -86,7 +87,13 @@ const ManageUsersPage = () => {
               </tr>
             </thead>
             {isLoading ? (
-              <p>Loading..</p>
+              <tbody>
+                <tr>
+                  <td colSpan={7} className="text-center">
+                    <TableLoader />
+                  </td>
+                </tr>
+              </tbody>
             ) : (
               <tbody>
                 {users.length ? (
