@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router";
 
-const BannerSlide = ({ backgroundImage, title, subtitle, buttonText }) => {
+const BannerSlide = ({ backgroundImage, title, subtitle, buttonText, to }) => {
   return (
     <div
       className="hero rounded-2xl overflow-hidden 2xl:min-h-[700px] xl:min-h-[550px] min-h-[500px] object-cover"
@@ -18,9 +19,12 @@ const BannerSlide = ({ backgroundImage, title, subtitle, buttonText }) => {
           <p className="mb-5 text-base md:text-lg xl:text-xl opacity-90 max-w-[90%] mx-auto">
             {subtitle}
           </p>
-          <button className="btn rounded-xl btn-primary text-base-200 text-md   border-none shadow-none">
+          <Link
+            to={to}
+            className="btn rounded-xl btn-primary text-base-200 text-md   border-none shadow-none"
+          >
             {buttonText}
-          </button>
+          </Link>
         </div>
       </div>
     </div>

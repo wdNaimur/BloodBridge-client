@@ -5,30 +5,59 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import BannerSlide from "./BannerSlide";
 import "./Banner.css";
+import useAuth from "../../../hooks/useAuth";
 
 const Banner = () => {
-  const bannerData = [
-    {
-      backgroundImage: "https://i.ibb.co/sLrjxQd/banner1.png",
-      title: "Be the Lifeline. Donate Blood, Save Lives.",
-      subtitle:
-        "Join thousands across the nation making a real difference every day",
-      buttonText: "Join as a Donor",
-    },
-    {
-      backgroundImage: "https://i.ibb.co/fzfkNS1d/banner2.png",
-      title: "A Simple Process. A Life-Changing Impact",
-      subtitle:
-        "Register, respond to requests, and help someone in need – in just minutes.",
-      buttonText: "Create Request",
-    },
-    {
-      backgroundImage: "https://i.ibb.co/LXSyT1BK/banner3.png",
-      title: "Every Drop Has a Story. Be Part of It.",
-      subtitle: "Your donation could be the reason someone sees tomorrow.",
-      buttonText: "View Requests",
-    },
-  ];
+  const { user } = useAuth();
+  const bannerData = user?.email
+    ? [
+        {
+          backgroundImage: "https://i.ibb.co/sLrjxQd/banner1.png",
+          title: "Looking for a Donor?",
+          subtitle: "Easily search for verified blood donors in your area.",
+          buttonText: "Search Donors",
+          to: "/search",
+        },
+        {
+          backgroundImage: "https://i.ibb.co/fzfkNS1d/banner2.png",
+          title: "Respond to Urgent Requests Near You",
+          subtitle: "Browse current donation needs and make a difference now.",
+          buttonText: "View Requests",
+          to: "/blood-requests",
+        },
+        {
+          backgroundImage: "https://i.ibb.co/LXSyT1BK/banner3.png",
+          title: "Update Your Availability",
+          subtitle:
+            "Help us match you with those in need by keeping your donor info up to date.",
+          buttonText: "Edit Profile",
+          to: "/dashboard/profile",
+        },
+      ]
+    : [
+        {
+          backgroundImage: "https://i.ibb.co/sLrjxQd/banner1.png",
+          title: "Looking for a Donor?",
+          subtitle: "Easily search for verified blood donors in your area.",
+          buttonText: "Search Donors",
+          to: "/search",
+        },
+        {
+          backgroundImage: "https://i.ibb.co/fzfkNS1d/banner2.png",
+          title: "Respond to Urgent Requests Near You",
+          subtitle: "Browse current donation needs and make a difference now.",
+          buttonText: "View Requests",
+          to: "/blood-requests",
+        },
+        {
+          backgroundImage: "https://i.ibb.co/LXSyT1BK/banner3.png",
+          title: "Be the Lifeline. Donate Blood, Save Lives.",
+          subtitle:
+            "Join thousands across the country making a difference every day.",
+          buttonText: "Join as a Donor",
+          to: "/signUp",
+        },
+      ];
 
   return (
     <Swiper

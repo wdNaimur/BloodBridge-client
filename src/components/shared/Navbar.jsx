@@ -60,13 +60,20 @@ const Navbar = () => {
   }, [mobileOpen]);
 
   // Navigation items
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Blood Requests", path: "/blood-requests" },
-    { name: "Search Donors", path: "/search" },
-    { name: "Support Us", path: "/funding" },
-    { name: "Blog", path: "/blog" },
-  ];
+  const navItems = user?.email
+    ? [
+        { name: "Home", path: "/" },
+        { name: "Blood Requests", path: "/blood-requests" },
+        { name: "Search Donors", path: "/search" },
+        { name: "Support Us", path: "/funding" },
+        { name: "Blog", path: "/blog" },
+      ]
+    : [
+        { name: "Home", path: "/" },
+        { name: "Blood Requests", path: "/blood-requests" },
+        { name: "Search Donors", path: "/search" },
+        { name: "Blog", path: "/blog" },
+      ];
 
   //  Shared NavLink JSX — reused for both desktop and mobile
   const navLink = (
