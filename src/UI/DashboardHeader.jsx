@@ -2,7 +2,7 @@ import React from "react";
 
 const DashboardHeader = ({ title, subtitle, icon }) => {
   return (
-    <div className="mb-6 border-b-2 border-dashed border-secondary/20">
+    <div className="mb-6 border-b-4 border-dashed border-secondary/20">
       <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 flex items-center gap-2">
         {icon && <span className="text-primary text-4xl">{icon}</span>}
         {title}

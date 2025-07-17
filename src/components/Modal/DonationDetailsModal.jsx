@@ -82,7 +82,7 @@ const DonationDetailsModal = ({ isOpen, onClose, donation }) => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-base-200 p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title className="text-xl font-bold text-primary border-b-2 pb-4 w-fit border-dashed border-b-primary/40">
+                  <Dialog.Title className="text-xl font-bold text-primary border-b-4 pb-4 w-fit border-dashed border-b-primary/40">
                     🩸 Donation Request Details
                   </Dialog.Title>
 

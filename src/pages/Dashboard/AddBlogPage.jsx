@@ -5,9 +5,12 @@ import toast from "react-hot-toast";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useNavigate } from "react-router";
+import useAuth from "../../hooks/useAuth";
 
 const AddBlogPage = () => {
   const { register, handleSubmit, reset } = useForm();
+  const { user } = useAuth();
+  console.log(user);
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,9 +36,9 @@ const AddBlogPage = () => {
         title: data.title,
         thumbnail: imageUrl,
         content,
+        author: user?.displayName,
         createdAt: new Date(),
       };
-
       const res = await axiosSecure.post("/blogs", blogData);
 
       if (res.data.blogId) {

@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Link } from "react-router";
 import FeedbackMessage from "../../UI/FeedbackMessage ";
 import PageHeader from "../../UI/PageHeader";
+import ScrollFadeIn from "../../UI/ScrollFadeIn";
 
 const BloodRequestPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -43,7 +44,7 @@ const BloodRequestPage = () => {
           message="There are currently no donation requests available. Please check back later or explore other options."
         />
       ) : (
-        <div>
+        <ScrollFadeIn>
           <PageHeader
             icon={BiDonateBlood}
             title="Blood Donation Requests"
@@ -93,7 +94,7 @@ const BloodRequestPage = () => {
               </div>
             ))}
           </div>
-        </div>
+        </ScrollFadeIn>
       )}
     </div>
   );

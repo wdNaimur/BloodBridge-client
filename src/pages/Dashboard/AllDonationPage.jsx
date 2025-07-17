@@ -6,6 +6,8 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import DonationDetailsModal from "../../components/Modal/DonationDetailsModal";
 import DonationsTable from "../../components/shared/DonationsTable";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import DashboardHeader from "../../UI/DashboardHeader";
+import { FaTint } from "react-icons/fa";
 
 const AllDonationPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -61,11 +63,15 @@ const AllDonationPage = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold">All Donations</h2>
+      <div className="mb-6">
+        <DashboardHeader
+          title="All Blood Donations"
+          subtitle="Track, manage, and oversee all blood donation requests across the platform."
+          icon={<FaTint />}
+        />
 
         {/* Status Filter */}
-        <div className="relative w-fit select-none">
+        <div className="relative w-fit select-none ms-auto">
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}

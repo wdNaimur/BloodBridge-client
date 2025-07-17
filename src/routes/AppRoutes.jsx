@@ -23,6 +23,7 @@ import AddBlogPage from "../pages/Dashboard/AddBlogPage";
 import BlogEditPage from "../pages/Dashboard/BlogEditPage";
 import AdminOrVolunteerRoute from "./AdminOrVolunteerRoute";
 import BlogPage from "../pages/Blog/BlogPage";
+import BlogDetailsPage from "../pages/Blog/BlogDetailsPage";
 
 export const router = createBrowserRouter([
   {
@@ -60,8 +61,12 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/blog",
+        path: "/blogs",
         element: <BlogPage />,
+      },
+      {
+        path: "/blogs/:id",
+        element: <BlogDetailsPage />,
       },
 
       {

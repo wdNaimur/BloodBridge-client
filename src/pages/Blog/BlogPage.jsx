@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import axios from "axios";
+import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import Loader from "../../UI/Loader";
+import PageHeader from "../../UI/PageHeader";
+import { FaRegNewspaper } from "react-icons/fa";
 
 const BlogPage = () => {
   useEffect(() => {
@@ -19,8 +23,7 @@ const BlogPage = () => {
       return res.data;
     },
   });
-  if (isLoading)
-    return <div className="text-center py-10">Loading blogs...</div>;
+  if (isLoading) return <Loader />;
 
   if (isError)
     return (
@@ -28,33 +31,38 @@ const BlogPage = () => {
     );
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">Latest Blogs</h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {blogs.map((blog) => (
-          <div
-            key={blog._id}
-            className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-shadow shadow-primary/5"
-          >
-            <img
-              src={blog.thumbnail}
-              alt={blog.title}
-              className="w-full h-48 object-cover bg-primary/10"
-            />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold mb-1">{blog.title}</h3>
-              <p className="text-gray-500 text-sm mb-2">- {blog.authorEmail}</p>
-              <Link
-                to={`/blogs/${blog._id}`}
-                className="text-primary font-medium hover:underline"
-              >
-                Read More →
-              </Link>
+    <ScrollFadeIn>
+      <div className="container mx-auto px-4 py-8">
+        <PageHeader
+          icon={FaRegNewspaper}
+          title="Insights & Inspiration"
+          subtitle="Explore helpful articles, real stories, and expert advice on blood donation, health, and community impact."
+        />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {blogs.map((blog) => (
+            <div
+              key={blog._id}
+              className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-shadow shadow-primary/5"
+            >
+              <img
+                src={blog.thumbnail}
+                alt={blog.title}
+                className="w-full h-48 object-cover bg-primary/10"
+              />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold mb-1">{blog.title}</h3>
+                <Link
+                  to={`/blogs/${blog._id}`}
+                  className="text-primary font-medium hover:underline"
+                >
+                  Read More →
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </ScrollFadeIn>
   );
 };
 

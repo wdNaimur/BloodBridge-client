@@ -175,7 +175,7 @@ const ProfilePage = () => {
         {/* PROFILE FORM AREA */}
         <div className="2xl:col-span-2 bg-base-200 p-4 rounded-2xl shadow-xl shadow-primary/5 font-Poppins">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-medium pb-2 mb-4 border-b-2 border-dashed border-secondary/20">
+            <h3 className="text-2xl font-medium pb-2 mb-4 border-b-4 border-dashed border-secondary/20">
               Profile Summary
             </h3>
             <div>

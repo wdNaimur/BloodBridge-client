@@ -14,13 +14,13 @@ const Footer = () => {
         { name: "Blood Requests", path: "/blood-requests" },
         { name: "Search Donors", path: "/search" },
         { name: "Support Us", path: "/funding" },
-        { name: "Blog", path: "/blog" },
+        { name: "Blogs", path: "/blogs" },
       ]
     : [
         { name: "Home", path: "/" },
         { name: "Blood Requests", path: "/blood-requests" },
         { name: "Search Donors", path: "/search" },
-        { name: "Blog", path: "/blog" },
+        { name: "Blogs", path: "/blogs" },
       ];
 
   return (

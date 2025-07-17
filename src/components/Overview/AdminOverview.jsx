@@ -79,16 +79,16 @@ const AdminOverview = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 w-full">
         {statCards.map((card, idx) => (
           <div
             key={idx}
-            className="rounded-xl shadow-lg shadow-primary/5 p-6 flex items-center gap-5 bg-base-200"
+            className="rounded-xl shadow-lg shadow-primary/5 p-6 flex items-center gap-5 bg-base-200 flex-1"
           >
             <div className="shrink-0">{card.icon}</div>
             <div>
               <p className="text-3xl font-bold text-secondary">{card.count}</p>
-              <p className="text-sm font-medium text-secondary/70 mt-1">
+              <p className="text-sm font-medium text-secondary/70 mt-1 min-w-25">
                 {card.title}
               </p>
             </div>
