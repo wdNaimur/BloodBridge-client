@@ -14,6 +14,10 @@ const UpdateDonationPage = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const [role, isRoleLoading] = useRole();
+  useEffect(() => {
+    document.title = "BloodBridge | Update Donation";
+    window.scrollTo(0, 0);
+  }, []);
 
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);

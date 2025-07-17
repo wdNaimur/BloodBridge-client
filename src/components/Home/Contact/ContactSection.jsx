@@ -3,6 +3,7 @@ import emailjs from "@emailjs/browser";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import SectionHeader from "../../../UI/SectionHeader";
 
 const ContactSection = () => {
   const { user } = useAuth();
@@ -66,50 +67,49 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="bg-base-100 h-full text-secondary px-4 py-12 lg:px-20">
-      <div className="container mx-auto px-4 grid grid-cols-2 gap-5">
-        <div>
-          <h1 className="text-4xl font-bold text-primary mb-6">Contact Us</h1>
-          <p className="text-lg mb-8">
-            Got a question, feedback, or collaboration idea? We'd love to hear
-            from you! Fill out the form below and we’ll get back to you soon.
-          </p>
-        </div>
+    <section className="bg-gradient-to-b from-primary/10 to-base-100 sm:border-4 sm:border-base-200 sm:mx-0 -mx-5 h-full text-secondary rounded-xl py-16">
+      <div className="container mx-auto">
+        <SectionHeader
+          title={`Contact BloodBridge`}
+          subtitle={`Have questions or want to help? Reach out to us—we’re here to listen and support you.`}
+        />
 
         <form
-          className="grid grid-cols-1 gap-4 bg-base-200 py-5 px-10 rounded-xl shadow-primary/5 shadow-xl"
+          className="grid grid-cols-1 col-span-3 gap-4 px-4 mx-[5%] bg-base-200 py-5 sm:px-8 rounded-xl sm:shadow-primary/5 sm:shadow-xl sm:mx-10"
           onSubmit={handleSubmit}
         >
-          <div>
-            <label className="block mb-1 font-semibold">Your Name</label>
-            <input
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              className="input w-full focus:outline-primary/50 focus:border-none border-primary/40 border-none bg-primary/10"
-              placeholder="Enter your name"
-              required
-            />
-          </div>
+          <div className="flex sm:flex-row flex-col gap-4">
+            <div className="flex-1">
+              <label className="block mb-1 font-semibold">Your Name</label>
+              <input
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                className="input w-full focus:outline-primary/50 focus:border-none border-primary/40 border-none bg-primary/10"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 font-semibold">Your Email</label>
-            <input
-              name="email"
-              type="email"
-              value={formData.email}
-              disabled
-              placeholder={
-                user ? "Logged-in email" : "Login required to send message"
-              }
-              className="input w-full bg-base-100 text-secondary border-primary/40 cursor-not-allowed"
-            />
-            {!user && (
-              <p className="text-sm text-error mt-1">
-                Please log in to send a message.
-              </p>
-            )}
+            <div className="flex-1">
+              <label className="block mb-1 font-semibold">Your Email</label>
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                disabled
+                placeholder={
+                  user ? "Logged-in email" : "Login required to send message"
+                }
+                className="input w-full bg-base-100 text-secondary border-primary/40 cursor-not-allowed"
+              />
+              {!user && (
+                <p className="text-sm text-error mt-1">
+                  Please log in to send a message.
+                </p>
+              )}
+            </div>
           </div>
 
           <div>

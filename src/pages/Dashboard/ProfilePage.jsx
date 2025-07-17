@@ -41,6 +41,10 @@ const ProfilePage = () => {
 
   const districtName = useDistrictName(profileData?.districtId);
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  useEffect(() => {
+    document.title = "BloodBridge | Profile";
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     register,

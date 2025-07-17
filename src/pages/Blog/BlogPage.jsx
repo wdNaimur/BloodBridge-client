@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import axios from "axios";
 
 const BlogPage = () => {
+  useEffect(() => {
+    document.title = "BloodBridge | Blogs";
+    window.scrollTo(0, 0);
+  }, []);
   const {
     data: blogs = [],
     isLoading,

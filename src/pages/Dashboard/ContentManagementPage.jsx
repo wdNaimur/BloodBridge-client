@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { FaPlus } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,10 @@ const ContentManagementPage = () => {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
   const [selectedAction, setSelectedAction] = useState("publish");
+  useEffect(() => {
+    document.title = "BloodBridge | Content Management";
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: blogs = [],

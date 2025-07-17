@@ -11,7 +11,7 @@ import useRole from "../hooks/useRole";
 const DashBoardLayout = () => {
   const [role, isRoleLoading] = useRole();
   useEffect(() => {
-    document.title = "BloodBridge";
+    document.title = "BloodBridge | Dashboard";
     window.scrollTo(0, 0);
   }, []);
   const { loading } = useAuth();

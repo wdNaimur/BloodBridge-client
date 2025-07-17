@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -28,6 +28,10 @@ const BloodRequestDetails = () => {
   const { user } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  useEffect(() => {
+    document.title = "BloodBridge | Blood Request";
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: request,

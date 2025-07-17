@@ -68,11 +68,6 @@ const NavProfile = () => {
           {/* Dropdown Menu */}
           <ul className="absolute right-0 mt-3 z-[100] p-2 shadow-2xl shadow-primary/10 menu dropdown-content bg-base-100 rounded-box w-52">
             <li>
-              <Link to="/dashboard/profile" onClick={() => setOpen(false)}>
-                Profile
-              </Link>
-            </li>
-            <li>
               <Link to="/dashboard" onClick={() => setOpen(false)}>
                 Dashboard
               </Link>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
@@ -13,6 +13,10 @@ const AllDonationPage = () => {
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+  useEffect(() => {
+    document.title = "BloodBridge | All Donation";
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: donations = [],

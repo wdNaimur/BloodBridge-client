@@ -18,6 +18,10 @@ const BlogEditPage = () => {
   const [currentThumbnail, setCurrentThumbnail] = useState("");
 
   const { register, handleSubmit, setValue } = useForm();
+  useEffect(() => {
+    document.title = "BloodBridge | Edit Blog";
+    window.scrollTo(0, 0);
+  }, []);
 
   // Fetch blog data with TanStack Query
   const {

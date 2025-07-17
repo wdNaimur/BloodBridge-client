@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DonorOverview from "../../components/Overview/DonorOverview";
 import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";
@@ -7,6 +7,10 @@ import useAuth from "../../hooks/useAuth";
 
 const OverViewPage = () => {
   const [role, isRoleLoading] = useRole();
+  useEffect(() => {
+    document.title = "BloodBridge | Overview";
+    window.scrollTo(0, 0);
+  }, []);
   const { user } = useAuth();
   if (isRoleLoading) {
     return <Loader />;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../UI/Loader";
@@ -14,6 +14,10 @@ const ManageUsersPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
+  useEffect(() => {
+    document.title = "BloodBridge | Manage Users";
+    window.scrollTo(0, 0);
+  }, []);
 
   function open(user) {
     setSelectedUser(user);

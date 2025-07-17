@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import DistrictUpazilaSelect from "../../components/shared/DistrictUpazilaSelect";
 import FeedbackMessage from "../../UI/FeedbackMessage ";
@@ -9,6 +9,10 @@ const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const SearchPage = () => {
   const axiosSecure = useAxiosSecure();
+  useEffect(() => {
+    document.title = "BloodBridge | Search";
+    window.scrollTo(0, 0);
+  }, []);
 
   const [formData, setFormData] = useState({
     bloodGroup: "",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loader from "../../UI/Loader";
@@ -10,6 +10,10 @@ import PageHeader from "../../UI/PageHeader";
 
 const BloodRequestPage = () => {
   const axiosSecure = useAxiosSecure();
+  useEffect(() => {
+    document.title = "BloodBridge | Blood Request";
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: requests = [],

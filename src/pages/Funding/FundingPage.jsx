@@ -16,6 +16,10 @@ const FundingPage = () => {
   const [customAmount, setCustomAmount] = useState("");
   const axiosSecure = useAxiosSecure();
   const [role, isRoleLoading] = useRole();
+  useEffect(() => {
+    document.title = "BloodBridge | Funding";
+    window.scrollTo(0, 0);
+  }, []);
 
   // Fetch all fundings
   const { data: fundings = [], isLoading } = useQuery({

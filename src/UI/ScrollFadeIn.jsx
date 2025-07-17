@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 
 const ScrollFadeIn = ({
   children,
-  duration = 0.5,
+  duration = 0.6,
   delay = 0,
   yOffset = 0,
   scaleFrom = 0.95,
@@ -11,7 +11,7 @@ const ScrollFadeIn = ({
   className = "",
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -20px 0px" });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
 
   return (
     <motion.div

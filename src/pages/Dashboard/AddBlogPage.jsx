@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import JoditEditor from "jodit-react";
 import toast from "react-hot-toast";
@@ -13,6 +13,10 @@ const AddBlogPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  useEffect(() => {
+    document.title = "BloodBridge | Add Blog";
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleBlogSubmit = async (data) => {
     setLoading(true);

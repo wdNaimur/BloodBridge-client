@@ -24,20 +24,19 @@ const Navbar = () => {
       const currentY = window.scrollY;
       const diff = currentY - lastScrollY.current;
 
-      // If scrolled down >40px, hide navbar
+      // If scrolled down more than 40px, hide navbar
       if (diff > 40) {
         setShowNavbar(false);
+        lastScrollY.current = currentY;
       }
-      // If scrolled up >1px, show navbar
+      // If scrolled up more than 1px, show navbar
       else if (diff < -1) {
         setShowNavbar(true);
+        lastScrollY.current = currentY;
       }
-
-      // Update last scroll position
-      lastScrollY.current = currentY;
+      // Small movements ignored — no update
     };
 
-    // Attach scroll listener
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -100,7 +99,7 @@ const Navbar = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.4, ease: "linear" }}
-          className="navbar bg-base-200/90 rounded-2xl p-2 px-4 backdrop-blur-2xl sticky  z-50 border border-base-200/80 shadow-xl shadow-primary/5 select-none"
+          className="navbar bg-base-200/90 rounded-2xl p-2 px-4 backdrop-blur-2xl fixed z-50 border border-base-200/80 shadow-xl shadow-primary/5 select-none w-[calc(100%-40px)]"
         >
           {/*  Fullscreen overlay when mobile dropdown is open */}
           {mobileOpen && (

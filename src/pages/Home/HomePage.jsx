@@ -3,6 +3,8 @@ import Banner from "../../components/Home/banner/Banner";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
 import ContactSection from "../../components/Home/Contact/ContactSection";
 import HowItWorksSection from "../../components/Home/HowItWorks/HowItWorksSection";
+import FeaturedStatsSection from "../../components/Home/FeaturedStats/FeaturedStatsSection";
+import RecentBloodRequests from "../../components/Home/RecentBloodRequests/RecentBloodRequests";
 
 const HomePage = () => {
   useEffect(() => {
@@ -13,6 +15,12 @@ const HomePage = () => {
     <div className="mt-6">
       <ScrollFadeIn>
         <Banner />
+      </ScrollFadeIn>
+      <ScrollFadeIn>
+        <FeaturedStatsSection />
+      </ScrollFadeIn>
+      <ScrollFadeIn>
+        <RecentBloodRequests />
       </ScrollFadeIn>
       <ScrollFadeIn>
         <HowItWorksSection />

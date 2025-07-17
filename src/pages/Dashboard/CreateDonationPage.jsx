@@ -12,6 +12,10 @@ const CreateDonationPage = () => {
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [upazilas, setUpazilas] = useState([]);
   const [status, isStatusLoading] = useStatus();
+  useEffect(() => {
+    document.title = "BloodBridge | Create Donation";
+    window.scrollTo(0, 0);
+  }, []);
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
   const { user } = useAuth();
@@ -89,9 +93,9 @@ const CreateDonationPage = () => {
 
       if (response.data.insertedId) {
         toast.success("Donation request created!");
-        reset();
-        setSelectedDistrictId("");
-        setUpazilas([]);
+        // reset();
+        // setSelectedDistrictId("");
+        // setUpazilas([]);
       } else {
         toast.error("Something went wrong. Please try again.");
       }
