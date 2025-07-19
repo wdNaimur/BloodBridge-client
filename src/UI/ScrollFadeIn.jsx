@@ -3,10 +3,10 @@ import { motion, useInView } from "framer-motion";
 
 const ScrollFadeIn = ({
   children,
-  duration = 0.6,
+  duration = 0.5,
   delay = 0,
-  yOffset = 0,
-  scaleFrom = 0.95,
+  yOffset = 50,
+  scaleFrom = 0.9,
   blurFrom = 4,
   className = "",
 }) => {

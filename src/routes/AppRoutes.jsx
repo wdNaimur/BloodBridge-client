@@ -91,9 +91,7 @@ export const router = createBrowserRouter([
         path: "",
         element: (
           <PrivateRoute>
-            <AdminOrVolunteerRoute>
-              <OverViewPage />
-            </AdminOrVolunteerRoute>
+            <OverViewPage />
           </PrivateRoute>
         ),
       },

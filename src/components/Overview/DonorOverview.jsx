@@ -8,6 +8,7 @@ import DonationsTable from "../shared/DonationsTable";
 import DonationDetailsModal from "../Modal/DonationDetailsModal";
 import Loader from "../../UI/Loader";
 import { Link } from "react-router";
+import FeedbackMessage from "../../UI/FeedbackMessage ";
 
 const DonorOverviewPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -16,9 +17,9 @@ const DonorOverviewPage = () => {
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch only latest 3 donation requests for the donor
+  // ✅ Fetch latest 3 donation requests
   const {
-    data: rawDonations = [],
+    data: donations = [],
     isLoading,
     isError,
     error,
@@ -27,21 +28,18 @@ const DonorOverviewPage = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/my-donations-request?email=${user.email}&limit=3`
+        `/my-donations-recent?email=${user.email}`
       );
       return res.data;
     },
   });
 
-  const donations = rawDonations.slice(0, 3);
   const handleDetails = (donation) => {
     setSelectedDonation(donation);
     setIsModalOpen(true);
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   if (isError) {
     toast.error("Failed to fetch donations");
@@ -55,20 +53,32 @@ const DonorOverviewPage = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6">
-        🩸 Your Recent Donation Requests
-      </h2>
       {donations.length === 0 ? (
-        <p className="text-secondary">You have no recent donation requests.</p>
+        <FeedbackMessage
+          title="No Recent Donation Activity"
+          message="It looks like you haven't made any donation requests yet. Start your first request and help save lives today."
+          buttonText="Create Donation Request"
+          to="/dashboard/create-donation-request"
+        />
       ) : (
-        <DonationsTable donations={donations} onDetailsClick={handleDetails} />
+        <>
+          <h2 className="text-2xl font-semibold mb-6">
+            🩸 Your Recent Donation Requests
+          </h2>
+          <DonationsTable
+            donations={donations}
+            onDetailsClick={handleDetails}
+          />
+          <Link
+            to="/dashboard/my-donation-request"
+            className="btn w-full btn-secondary rounded-b-xl text-base-200 uppercase"
+          >
+            View All Requests
+          </Link>
+        </>
       )}
-      <Link
-        to={`my-donation-request`}
-        className="btn w-full btn-secondary rounded-b-xl text-base-200 uppercase"
-      >
-        view my all request
-      </Link>
+
+      {/* Modal outside to avoid conditional mount issues */}
       <DonationDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

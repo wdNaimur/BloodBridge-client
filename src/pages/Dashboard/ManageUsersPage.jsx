@@ -8,16 +8,25 @@ import { FaUsersCog } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import DashboardHeader from "../../UI/DashboardHeader";
 import TableLoader from "../../UI/TableLoader";
+import Pagination from "../../UI/Pagination";
 
 const ManageUsersPage = () => {
   const axiosSecure = useAxiosSecure();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 20;
+
   useEffect(() => {
     document.title = "BloodBridge | Manage Users";
     window.scrollTo(0, 0);
   }, []);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedStatus]);
 
   function open(user) {
     setSelectedUser(user);
@@ -29,20 +38,24 @@ const ManageUsersPage = () => {
     setSelectedUser(null);
   }
 
-  // Fetch users filtered by status
   const {
-    data: users = [],
+    data = { users: [], totalCount: 0 },
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["users", selectedStatus],
+    queryKey: ["users", selectedStatus, currentPage],
     queryFn: async () => {
-      const params = selectedStatus ? `?status=${selectedStatus}` : "";
-      const res = await axiosSecure.get(`/users${params}`);
-      return res.data;
+      const statusQuery = selectedStatus ? `&status=${selectedStatus}` : "";
+      const res = await axiosSecure.get(
+        `/users?page=${currentPage}&limit=${itemsPerPage}${statusQuery}`
+      );
+      return res.data; // Expecting { users: [], totalCount: number }
     },
   });
+
+  const totalPages = Math.ceil(data.totalCount / itemsPerPage);
+  const pages = [...Array(totalPages).keys()];
 
   if (isError)
     return (
@@ -100,8 +113,8 @@ const ManageUsersPage = () => {
               </tbody>
             ) : (
               <tbody>
-                {users.length ? (
-                  users.map((user) => (
+                {data.users.length ? (
+                  data.users.map((user) => (
                     <ManageUsersTable
                       key={user._id}
                       user={user}
@@ -125,6 +138,11 @@ const ManageUsersPage = () => {
           <UpdateRoleModal isOpen={isOpen} close={close} user={selectedUser} />
         )}
       </div>
+      <Pagination
+        pages={pages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };

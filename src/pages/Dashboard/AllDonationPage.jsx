@@ -1,41 +1,48 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
-import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import DonationDetailsModal from "../../components/Modal/DonationDetailsModal";
 import DonationsTable from "../../components/shared/DonationsTable";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import DashboardHeader from "../../UI/DashboardHeader";
 import { FaTint } from "react-icons/fa";
+import Pagination from "../../UI/Pagination"; // Your pagination component
 
 const AllDonationPage = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth();
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+
   useEffect(() => {
     document.title = "BloodBridge | All Donation";
     window.scrollTo(0, 0);
-  }, []);
+    setCurrentPage(0); // reset page when status filter changes
+  }, [selectedStatus]);
 
   const {
-    data: donations = [],
+    data = { donations: [], totalCount: 0 },
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ["all-donations-request", user?.email, selectedStatus],
-    enabled: !!user?.email,
+    queryKey: ["all-donations-request", selectedStatus, currentPage],
     queryFn: async () => {
       const statusQuery = selectedStatus ? `&status=${selectedStatus}` : "";
       const res = await axiosSecure.get(
-        `/all-donations-request?${statusQuery}`
+        `/all-donations-request?page=${currentPage}&limit=${itemsPerPage}${statusQuery}`
       );
       return res.data;
     },
+    keepPreviousData: true,
   });
+
+  const totalPages = Math.ceil(data.totalCount / itemsPerPage);
+  const pages = [...Array(totalPages).keys()];
+
   const handleDetails = (donation) => {
     setSelectedDonation(donation);
     setIsModalOpen(true);
@@ -44,9 +51,7 @@ const AllDonationPage = () => {
   if (isLoading) {
     return (
       <div className="p-6">
-        <p className="text-primary text-lg">
-          Loading your donation requests...
-        </p>
+        <p className="text-primary text-lg">Loading donation requests...</p>
       </div>
     );
   }
@@ -63,7 +68,7 @@ const AllDonationPage = () => {
 
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <DashboardHeader
           title="All Blood Donations"
           subtitle="Track, manage, and oversee all blood donation requests across the platform."
@@ -91,7 +96,17 @@ const AllDonationPage = () => {
         </div>
       </div>
 
-      <DonationsTable donations={donations} onDetailsClick={handleDetails} />
+      <DonationsTable
+        donations={data.donations}
+        onDetailsClick={handleDetails}
+      />
+
+      {/* Pagination */}
+      <Pagination
+        pages={pages}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
 
       <DonationDetailsModal
         isOpen={isModalOpen}

@@ -2,9 +2,9 @@ import React from "react";
 import useAuth from "../../hooks/useAuth";
 import { Link, NavLink, useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import BloodBridgeLogo from "./BloodBridgeLogo";
 import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";
+import BloodBridgeLogoFull from "./BloodBridgeLogoFull";
 
 const DashboardSideMenu = ({ handleNavClick }) => {
   const [role, isRoleLoading] = useRole();
@@ -67,7 +67,7 @@ const DashboardSideMenu = ({ handleNavClick }) => {
     <menu className="w-96 h-screen bg-base-200 text-secondary p-6 flex flex-col shadow-xl shadow-primary/5 fixed top-0 left-0 overflow-y-auto">
       <div className="flex justify-center pb-2 border-b-4 border-dashed border-primary/40 mb-2">
         <button>
-          <BloodBridgeLogo />
+          <BloodBridgeLogoFull />
         </button>
       </div>
 

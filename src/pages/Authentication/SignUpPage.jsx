@@ -225,8 +225,8 @@ const SignUpPage = () => {
                 disabled={!selectedDistrictId}
               >
                 <option value="">Select Upazila</option>
-                {upazilas.map((u, idx) => (
-                  <option key={idx} value={u}>
+                {upazilas.map((u, index) => (
+                  <option key={index} value={u}>
                     {u}
                   </option>
                 ))}

@@ -10,30 +10,52 @@ import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";
 import PageHeader from "../../UI/PageHeader";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import FeedbackMessage from "../../UI/FeedbackMessage ";
+import useAuth from "../../hooks/useAuth";
+import Pagination from "../../UI/Pagination";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK_KEY);
 
 const FundingPage = () => {
   const [selectedAmount, setSelectedAmount] = useState("");
+  const { user } = useAuth();
   const [customAmount, setCustomAmount] = useState("");
   const axiosSecure = useAxiosSecure();
   const [role, isRoleLoading] = useRole();
+
+  // Pagination state (0-based)
+  const [page, setPage] = useState(0);
+  const limit = 10;
+
   useEffect(() => {
     document.title = "BloodBridge | Funding";
     window.scrollTo(0, 0);
-  }, []);
+  }, [role, user?.email, page]);
 
-  // Fetch all fundings
-  const { data: fundings = [], isLoading } = useQuery({
-    queryKey: ["fundings"],
+  // Fetch fundings with pagination
+  const { data, isLoading } = useQuery({
+    queryKey: ["fundings", role, user?.email, page],
     queryFn: async () => {
-      const res = await axiosSecure.get("/fundings");
+      if (!role || !user?.email)
+        return {
+          fundings: [],
+          totalPages: 0,
+          totalItems: 0,
+          totalDonationAmount: 0,
+        };
+      const res = await axiosSecure.get(
+        `/fundings?role=${role}&email=${user.email}&page=${
+          page + 1
+        }&limit=${limit}`
+      );
       return res.data;
     },
+    keepPreviousData: true,
   });
 
-  // Calculate total
-  const totalFund = fundings.reduce((acc, curr) => acc + curr.amount, 0);
+  const fundings = data?.fundings || [];
+  const totalPages = data?.totalPages || 0;
+  const totalDonationAmount = data?.totalDonationAmount || 0;
 
   const getFinalAmount = () => {
     if (selectedAmount === "custom") {
@@ -50,20 +72,22 @@ const FundingPage = () => {
       document.getElementById("my_modal_3").showModal();
     }
   };
+
   if (isRoleLoading) {
     return <Loader />;
   }
+
   return (
     <ScrollFadeIn>
       <div className="max-w-5xl mx-auto px-4 py-10 min-h-screen">
         <PageHeader
           icon={FaDonate}
           title={`Support BloodBridge`}
-          subtitle={` Your donation helps us run blood donation campaigns, maintain emergency
-        services, and save lives. Every dollar builds a bridge between giving
-        and living.`}
+          subtitle={`Your donation helps us run blood donation campaigns, maintain emergency
+          services, and save lives. Every dollar builds a bridge between giving
+          and living.`}
         />
-        <p className="text-secondary opacity-80 max-w-xl mb-6"></p>
+
         {/* Donation UI */}
         <div className="mb-4">
           <p className="font-medium text-secondary mb-2 text-xl">
@@ -89,7 +113,7 @@ const FundingPage = () => {
                 <span>৳{amount}</span>
               </label>
             ))}
-            <div className=" flex gap-2">
+            <div className="flex gap-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
@@ -114,6 +138,7 @@ const FundingPage = () => {
             </div>
           </div>
         </div>
+
         <div className="mb-8">
           <button
             onClick={handleDonateClick}
@@ -122,6 +147,7 @@ const FundingPage = () => {
             Contribute to BloodBridge
           </button>
         </div>
+
         {/* Stripe Modal */}
         <dialog id="my_modal_3" className="modal">
           <div className="modal-box">
@@ -136,50 +162,56 @@ const FundingPage = () => {
             </Elements>
           </div>
         </dialog>
-        {/* Total Fund Summary */}
-        {role == "admin" ||
-          (role == "volunteer" && (
-            <div className="text-right text-lg font-semibold mt-10 mb-3">
-              Total Raised: <span className="text-primary">৳{totalFund}</span>
-            </div>
-          ))}
+
+        {/* Total Fund Summary from backend (for admin/volunteer) */}
+        {(role === "admin" || role === "volunteer") && (
+          <div className="text-right text-lg font-semibold mt-10 mb-3">
+            Total Raised:{" "}
+            <span className="text-primary">৳{totalDonationAmount}</span>
+          </div>
+        )}
+
         {/* Funding Table */}
-        <div className="overflow-x-auto bg-base-100 rounded-xl shadow">
-          <table className="table">
-            <thead>
-              <tr className="bg-primary text-base-100">
-                <th>#</th>
-                <th>Donor Name</th>
-                <th>Amount (৳)</th>
-                <th>Funding Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={4} className="text-center py-10">
-                    Loading fundings...
-                  </td>
-                </tr>
-              ) : fundings.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="text-center py-10">
-                    No donations yet.
-                  </td>
-                </tr>
-              ) : (
-                fundings.map((fund, index) => (
-                  <tr key={fund._id}>
-                    <td>{index + 1}</td>
-                    <td>{fund.name}</td>
-                    <td>৳{fund.amount}</td>
-                    <td>{new Date(fund.createdAt).toLocaleDateString()}</td>
+        {isLoading ? (
+          <Loader />
+        ) : fundings.length === 0 ? (
+          <FeedbackMessage
+            title="No Donations Yet"
+            message="You haven't made any donations so far. Donate to BloodBridge and make a life-saving impact today."
+          />
+        ) : (
+          <>
+            <div className="overflow-x-auto bg-base-100 rounded-xl shadow-primary/5 shadow-xl">
+              <table className="table">
+                <thead>
+                  <tr className="bg-primary text-base-100">
+                    <th>#</th>
+                    <th>Donor Name</th>
+                    <th>Amount (৳)</th>
+                    <th>Funding Date</th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {fundings.map((fund, index) => (
+                    <tr key={fund._id}>
+                      <td>{page * limit + index + 1}</td>
+                      <td>{fund.name}</td>
+                      <td>৳{fund.amount}</td>
+                      <td>{new Date(fund.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <Pagination
+              pages={[...Array(totalPages).keys()]}
+              currentPage={page}
+              setCurrentPage={setPage}
+            />
+          </>
+        )}
       </div>
     </ScrollFadeIn>
   );

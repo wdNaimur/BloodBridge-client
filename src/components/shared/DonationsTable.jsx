@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import DeleteDonationModal from "../Modal/DeleteDonationModal";
 import useRole from "../../hooks/useRole";
+import FeedbackMessage from "../../UI/FeedbackMessage ";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { BsThreeDots } from "react-icons/bs";
 
 const DonationsTable = ({ donations, onDetailsClick }) => {
   // Correct state variable names for modal control
@@ -22,7 +26,14 @@ const DonationsTable = ({ donations, onDetailsClick }) => {
   };
 
   if (!donations || donations.length === 0) {
-    return <p className="text-secondary">No donations to display.</p>;
+    return (
+      <FeedbackMessage
+        title="No Donation Requests Found"
+        message="There are no donation requests to display at the moment. They will appear here when available."
+        buttonText="Create Donation Request"
+        to="/dashboard/create-donation-request"
+      />
+    );
   }
 
   return (
@@ -105,23 +116,23 @@ const DonationsTable = ({ donations, onDetailsClick }) => {
                         onClick={() => onDetailsClick(donation)}
                         className="btn rounded-xl btn-xs btn-outline btn-primary hover:text-base-200"
                       >
-                        Details
+                        <BsThreeDots />
                       </button>
-                      {role === "admin" && (
+                      {(role === "admin" || role === "donor") && (
                         <Link
                           to={`/dashboard/update-donation-request/${donation._id}`}
                           className="btn rounded-xl btn-xs btn-outline btn-primary hover:text-base-200"
                         >
-                          Edit
+                          <MdEdit />
                         </Link>
                       )}
 
-                      {role === "admin" && (
+                      {(role === "admin" || role === "donor") && (
                         <button
                           onClick={() => handleDeleteClick(donation)}
-                          className="btn rounded-xl btn-xs btn-outline btn-error"
+                          className="btn rounded-xl btn-xs btn-outline btn-primary"
                         >
-                          Delete
+                          <MdDelete />
                         </button>
                       )}
                     </span>

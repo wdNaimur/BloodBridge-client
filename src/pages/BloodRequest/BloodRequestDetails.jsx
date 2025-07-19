@@ -103,13 +103,13 @@ const BloodRequestDetails = () => {
     <div className="container mx-auto px-4 font-poppins mt-10">
       <PageHeader
         icon={FaInfoCircle}
-        title="Blood Donation Request Details"
+        title="Blood Request Details"
         subtitle="Review the request and take action to help someone in urgent need."
       />
 
       <div className="bg-base-200 p-4 md:p-6 rounded-xl border border-primary/10 shadow-lg shadow-primary/5 text-secondary space-y-6">
         {/* Info grid */}
-        <div className="grid 2xl:grid-cols-3 md:grid-cols-2 gap-6 justify-center items-start">
+        <div className="grid 2xl:grid-cols-3 sm:grid-cols-2 gap-6 sm:justify-center items-start">
           {/* Recipient Info */}
           <div>
             <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 text-primary opacity-80">

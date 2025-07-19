@@ -4,6 +4,7 @@ import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";
 import AdminOverview from "../../components/Overview/AdminOverview";
 import useAuth from "../../hooks/useAuth";
+import ScrollFadeIn from "../../UI/ScrollFadeIn";
 
 const OverViewPage = () => {
   const [role, isRoleLoading] = useRole();
@@ -16,7 +17,7 @@ const OverViewPage = () => {
     return <Loader />;
   }
   return (
-    <div>
+    <ScrollFadeIn>
       <div className="mb-6 text-primary max-w-3xl">
         <h1 className="text-3xl font-bold mb-2">
           <span className="text-secondary">Welcome back,</span> <br />{" "}
@@ -26,7 +27,7 @@ const OverViewPage = () => {
       {role === "donor" && <DonorOverview />}
       {role === "admin" && <AdminOverview />}
       {role === "volunteer" && <AdminOverview />}
-    </div>
+    </ScrollFadeIn>
   );
 };
 

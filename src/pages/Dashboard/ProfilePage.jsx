@@ -12,6 +12,7 @@ import useDistrictName from "../../hooks/useDistrictName";
 import { motion } from "motion/react";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 import DashboardHeader from "../../UI/DashboardHeader";
+import ScrollFadeIn from "../../UI/ScrollFadeIn";
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -111,7 +112,7 @@ const ProfilePage = () => {
   if (error) return null;
 
   return (
-    <div>
+    <ScrollFadeIn>
       <DashboardHeader
         title="My Profile"
         subtitle="View and manage your personal information securely."
@@ -306,7 +307,7 @@ const ProfilePage = () => {
           </div>
         </div>
       </motion.form>
-    </div>
+    </ScrollFadeIn>
   );
 };
 

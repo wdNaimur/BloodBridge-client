@@ -7,6 +7,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteBlogModal from "../../components/Modal/DeleteBlogModal";
 import PublishBlogModal from "../../components/Modal/PublishBlogModal";
 import useRole from "../../hooks/useRole";
+import Pagination from "../../UI/Pagination"; // make sure you have this component
 
 const ContentManagementPage = () => {
   const navigate = useNavigate();
@@ -17,24 +18,29 @@ const ContentManagementPage = () => {
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [selectedBlogId, setSelectedBlogId] = useState(null);
   const [selectedAction, setSelectedAction] = useState("publish");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+
   useEffect(() => {
     document.title = "BloodBridge | Content Management";
     window.scrollTo(0, 0);
   }, []);
 
-  const {
-    data: blogs = [],
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["blogs"],
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ["blogs", currentPage],
     queryFn: async () => {
-      const res = await axiosSecure.get("/blogs");
+      const res = await axiosSecure.get(
+        `/blogs?page=${currentPage}&limit=${itemsPerPage}`
+      );
       return res.data;
     },
   });
+
+  const blogs = data?.blogs || [];
+  const totalCount = data?.totalCount || 0;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const pages = [...Array(totalPages).keys()];
 
   const handleAddBlog = () =>
     navigate("/dashboard/content-management/add-blog");
@@ -46,7 +52,7 @@ const ContentManagementPage = () => {
 
   const handleStatusClick = (id, action) => {
     setSelectedBlogId(id);
-    setSelectedAction(action); // 'publish' or 'unpublish'
+    setSelectedAction(action);
     setIsPublishModalOpen(true);
   };
 
@@ -54,7 +60,6 @@ const ContentManagementPage = () => {
 
   return (
     <>
-      {/* Header */}
       <div className="flex justify-between items-center mb-6 bg-base-200 p-6 rounded-xl shadow-xl shadow-primary/5">
         <h2 className="text-2xl font-bold text-primary">Content Management</h2>
         <button
@@ -66,7 +71,6 @@ const ContentManagementPage = () => {
         </button>
       </div>
 
-      {/* Blog Grid */}
       {isLoading ? (
         <div className="text-center text-secondary">Loading blogs...</div>
       ) : isError ? (
@@ -78,60 +82,68 @@ const ContentManagementPage = () => {
           No blogs available yet.
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {blogs.map((blog) => (
-            <div
-              key={blog._id}
-              className="bg-base-200 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer shadow-primary/5 relative flex flex-col"
-            >
-              <img
-                src={blog.thumbnailUrl || blog.thumbnail}
-                alt={blog.title}
-                className="w-full h-40 object-cover rounded-t-md bg-secondary/30"
-              />
-              <div className="p-4 flex flex-col flex-1">
-                <h3 className="text-base font-medium text-secondary mb-1">
-                  {blog.title}
-                </h3>
+        <>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {blogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="bg-base-200 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer shadow-primary/5 relative flex flex-col"
+              >
+                <img
+                  src={blog.thumbnailUrl || blog.thumbnail}
+                  alt={blog.title}
+                  className="w-full h-40 object-cover rounded-t-md bg-secondary/30"
+                />
+                <div className="p-4 flex flex-col flex-1">
+                  <h3 className="text-base font-medium text-secondary mb-1">
+                    {blog.title}
+                  </h3>
 
-                {/* Admin-only buttons */}
-                {role === "admin" && (
-                  <button
-                    className={`btn ${
-                      blog.status === "draft" ? "btn-primary" : "btn-warning"
-                    } rounded-lg shadow-none border-none btn-sm text-base-200 capitalize w-full mt-auto`}
-                    onClick={() =>
-                      handleStatusClick(
-                        blog._id,
-                        blog.status === "draft" ? "publish" : "unpublish"
-                      )
-                    }
-                  >
-                    {blog.status === "draft" ? "Publish" : "Unpublish"}
-                  </button>
-                )}
-              </div>
+                  {role === "admin" && (
+                    <button
+                      className={`btn ${
+                        blog.status === "draft" ? "btn-primary" : "btn-warning"
+                      } rounded-lg shadow-none border-none btn-sm text-base-200 capitalize w-full mt-auto`}
+                      onClick={() =>
+                        handleStatusClick(
+                          blog._id,
+                          blog.status === "draft" ? "publish" : "unpublish"
+                        )
+                      }
+                    >
+                      {blog.status === "draft" ? "Publish" : "Unpublish"}
+                    </button>
+                  )}
+                </div>
 
-              {/* Edit & Delete */}
-              <div>
-                <Link
-                  to={`/dashboard/content-management/blog/${blog._id}`}
-                  className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 left-2 hover:opacity-100 duration-300"
-                >
-                  <MdEdit />
-                </Link>
-                {role === "admin" && (
-                  <button
-                    onClick={() => handleDeleteClick(blog._id)}
-                    className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300"
+                <div>
+                  <Link
+                    to={`/dashboard/content-management/blog/${blog._id}`}
+                    className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 left-2 hover:opacity-100 duration-300"
                   >
-                    <MdDelete />
-                  </button>
-                )}
+                    <MdEdit />
+                  </Link>
+                  {role === "admin" && (
+                    <button
+                      onClick={() => handleDeleteClick(blog._id)}
+                      className="btn btn-circle shadow-none border-none btn-secondary opacity-60 btn-sm absolute top-2 right-2 hover:opacity-100 duration-300"
+                    >
+                      <MdDelete />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+
+          {/* Pagination */}
+
+          <Pagination
+            pages={pages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
       )}
 
       {/* Modals */}
@@ -140,6 +152,7 @@ const ContentManagementPage = () => {
         onClose={() => {
           setIsDeleteModalOpen(false);
           setSelectedBlogId(null);
+          refetch();
         }}
         blogId={selectedBlogId}
       />
@@ -152,7 +165,7 @@ const ContentManagementPage = () => {
           refetch();
         }}
         blogId={selectedBlogId}
-        action={selectedAction} // pass 'publish' or 'unpublish'
+        action={selectedAction}
       />
     </>
   );

@@ -26,3 +26,6 @@
   --color-base-100: #311d3f;
   --color-base-200: #182131;
 }
+html {
+  scroll-behavior: smooth;
+}
