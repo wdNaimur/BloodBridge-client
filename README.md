@@ -93,7 +93,4 @@ Then open: [http://localhost:5173](http://localhost:5173)
 - 💻 [Client Repository](https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-wdNaimur)
 - 🔧 [Server Repository](https://github.com/Programming-Hero-Web-Course4/b11a12-server-side-wdNaimur)
 
----
-
 <p align="center"><sub><strong>Designed & Developed by Md. Naimur Rahman</strong></sub></p>
-```
