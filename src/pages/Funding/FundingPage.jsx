@@ -73,7 +73,7 @@ const FundingPage = () => {
     }
   };
 
-  if (isRoleLoading) {
+  if (isRoleLoading || isLoading) {
     return <Loader />;
   }
 
