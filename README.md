@@ -3,25 +3,29 @@
 **BloodBridge** is a full-featured MERN-based blood donation platform designed to connect blood donors with recipients efficiently. It includes user roles, donation management, blog content tools, and funding features—all wrapped in a fully responsive, user-friendly experience.
 
 🌐 **Live Site:** [BloodBridge](https://bloodbridge-by-naimur.web.app/)  
-🛂 **Admin Login**  
-- **Email:** `admin.naimur@gmail.com`  
-- **Password:** `Admin@naimur11`
+🛂 **Admin Login**
 
+- **Email:** `admin.naimur@gmail.com`
+- **Password:** `Admin@naimur11`
 
 ## 🧰 Tech Stack & Tools
 
 ### 🔧 Frontend Framework & Build Tools
+
 - React + Vite
 
 ### 🎨 Styling
+
 - Tailwind CSS
 - DaisyUI
 
 ### 🔐 Authentication & Authorization
+
 - Firebase Authentication
 - JWT (jsonwebtoken)
 
 ### 📦 Additional Libraries & Tools
+
 - TanStack Query (React Query)
 - Stripe (React Stripe Elements)
 - ImageBB (via API)
@@ -44,7 +48,6 @@
 - ✅ **Sweet Alerts/Toasts**: Friendly UI feedback on all actions
 - 📱 **Responsive Design**: Mobile, tablet, and desktop views supported
 - 🔐 **Secure Environment Config**: API keys & secrets stored in `.env.local`
-
 
 ## 🚀 Local Setup Instructions (Client Side Only)
 
@@ -78,7 +81,6 @@ VITE_EMAIL_TEMPLATE_ID=your_emailjs_template_id
 VITE_EMAIL_PUBLIC_KEY=your_emailjs_public_key
 ```
 
-
 ### 3️⃣ Run the Development Server
 
 ```bash
@@ -87,8 +89,9 @@ npm run dev
 
 Then open: [http://localhost:5173](http://localhost:5173)
 
+## 📁 Repositories and Links
 
-## 📁 Repositories
+- 🌐 **Live Site:** [BloodBridge](https://bloodbridge-by-naimur.web.app/)
 
 - 💻 [Client Repository](https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-wdNaimur)
 - 🔧 [Server Repository](https://github.com/Programming-Hero-Web-Course4/b11a12-server-side-wdNaimur)
