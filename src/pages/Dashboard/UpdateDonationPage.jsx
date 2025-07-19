@@ -6,7 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import useRole from "../../hooks/useRole";
-import Loader from "../../UI/Loader";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const UpdateDonationPage = () => {
   const { id } = useParams();
@@ -144,7 +144,7 @@ const UpdateDonationPage = () => {
   };
 
   if (isLoading || isRoleLoading) {
-    return <Loader />;
+    return <DashBoardLoader />;
   }
 
   if (isError || !formData) {

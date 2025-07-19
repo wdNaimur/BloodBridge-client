@@ -7,7 +7,9 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteBlogModal from "../../components/Modal/DeleteBlogModal";
 import PublishBlogModal from "../../components/Modal/PublishBlogModal";
 import useRole from "../../hooks/useRole";
-import Pagination from "../../UI/Pagination"; // make sure you have this component
+import Pagination from "../../UI/Pagination";
+import DashBoardLoader from "../../UI/DashBoardLoader";
+import TableLoader from "../../UI/TableLoader";
 
 const ContentManagementPage = () => {
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ const ContentManagementPage = () => {
     setIsPublishModalOpen(true);
   };
 
-  if (isRoleLoading) return <div className="text-center">Loading role...</div>;
+  if (isRoleLoading) return <DashBoardLoader />;
 
   return (
     <>
@@ -72,7 +74,9 @@ const ContentManagementPage = () => {
       </div>
 
       {isLoading ? (
-        <div className="text-center text-secondary">Loading blogs...</div>
+        <div className="w-fit mx-auto">
+          <TableLoader />
+        </div>
       ) : isError ? (
         <div className="text-center text-red-500">
           Failed to fetch blogs: {error.message}

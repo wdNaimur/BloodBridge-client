@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
-import Loader from "../../UI/Loader";
 import toast from "react-hot-toast";
 import { FaEdit, FaUserCircle } from "react-icons/fa";
 import { FiCamera } from "react-icons/fi";
@@ -13,6 +12,7 @@ import { motion } from "motion/react";
 import uploadImageToImgBB from "../../utils/uploadImageToImgBB";
 import DashboardHeader from "../../UI/DashboardHeader";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -108,7 +108,7 @@ const ProfilePage = () => {
     }
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <DashBoardLoader />;
   if (error) return null;
 
   return (

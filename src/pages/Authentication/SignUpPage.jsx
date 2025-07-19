@@ -61,7 +61,7 @@ const SignUpPage = () => {
       )
       .catch((err) => console.error("District fetch failed:", err));
   }, []);
-
+  console.log(districts);
   useEffect(() => {
     if (!selectedDistrictId) return setUpazilas([]);
     fetch("/data/upazilas.json")

@@ -7,7 +7,8 @@ import DonationsTable from "../../components/shared/DonationsTable";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import DashboardHeader from "../../UI/DashboardHeader";
 import { FaTint } from "react-icons/fa";
-import Pagination from "../../UI/Pagination"; // Your pagination component
+import Pagination from "../../UI/Pagination";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const AllDonationPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -49,11 +50,7 @@ const AllDonationPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="p-6">
-        <p className="text-primary text-lg">Loading donation requests...</p>
-      </div>
-    );
+    return <DashBoardLoader />;
   }
 
   if (isError) {

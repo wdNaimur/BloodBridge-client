@@ -6,11 +6,11 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import DonationDetailsModal from "../../components/Modal/DonationDetailsModal";
 import DonationsTable from "../../components/shared/DonationsTable";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import Loader from "../../UI/Loader";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
 import DashboardHeader from "../../UI/DashboardHeader";
 import { FaTint } from "react-icons/fa";
 import Pagination from "../../UI/Pagination";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const MyDonationRequestPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -55,7 +55,7 @@ const MyDonationRequestPage = () => {
   };
 
   if (isLoading) {
-    return <Loader />;
+    return <DashBoardLoader />;
   }
 
   if (isError) {

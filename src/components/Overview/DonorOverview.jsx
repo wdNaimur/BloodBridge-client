@@ -3,12 +3,11 @@ import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-
 import DonationsTable from "../shared/DonationsTable";
 import DonationDetailsModal from "../Modal/DonationDetailsModal";
-import Loader from "../../UI/Loader";
 import { Link } from "react-router";
 import FeedbackMessage from "../../UI/FeedbackMessage ";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const DonorOverviewPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -39,7 +38,12 @@ const DonorOverviewPage = () => {
     setIsModalOpen(true);
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
 
   if (isError) {
     toast.error("Failed to fetch donations");

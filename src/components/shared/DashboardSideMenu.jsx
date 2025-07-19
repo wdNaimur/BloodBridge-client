@@ -1,6 +1,6 @@
 import React from "react";
 import useAuth from "../../hooks/useAuth";
-import { Link, NavLink, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useRole from "../../hooks/useRole";
 import Loader from "../../UI/Loader";

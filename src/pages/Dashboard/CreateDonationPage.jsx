@@ -4,8 +4,8 @@ import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useStatus from "../../hooks/useStatus";
-import Loader from "../../UI/Loader";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const CreateDonationPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -106,7 +106,7 @@ const CreateDonationPage = () => {
     }
   };
   if (isStatusLoading) {
-    return <Loader />;
+    return <DashBoardLoader />;
   }
   return (
     <ScrollFadeIn>

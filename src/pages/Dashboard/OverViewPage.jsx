@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import DonorOverview from "../../components/Overview/DonorOverview";
 import useRole from "../../hooks/useRole";
-import Loader from "../../UI/Loader";
 import AdminOverview from "../../components/Overview/AdminOverview";
 import useAuth from "../../hooks/useAuth";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
+import DashBoardLoader from "../../UI/DashBoardLoader";
 
 const OverViewPage = () => {
   const [role, isRoleLoading] = useRole();
@@ -14,7 +14,7 @@ const OverViewPage = () => {
   }, []);
   const { user } = useAuth();
   if (isRoleLoading) {
-    return <Loader />;
+    return <DashBoardLoader />;
   }
   return (
     <ScrollFadeIn>
