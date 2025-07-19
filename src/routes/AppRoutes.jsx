@@ -24,12 +24,13 @@ import BlogEditPage from "../pages/Dashboard/BlogEditPage";
 import AdminOrVolunteerRoute from "./AdminOrVolunteerRoute";
 import BlogPage from "../pages/Blog/BlogPage";
 import BlogDetailsPage from "../pages/Blog/BlogDetailsPage";
+import ErrorPage from "../pages/Error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    errorElement: <div>404 - Page Not Found</div>,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -86,6 +87,7 @@ export const router = createBrowserRouter([
         <DashboardLayout />
       </PrivateRoute>
     ),
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "",
