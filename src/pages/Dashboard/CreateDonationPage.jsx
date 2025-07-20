@@ -6,6 +6,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useStatus from "../../hooks/useStatus";
 import ScrollFadeIn from "../../UI/ScrollFadeIn";
 import DashBoardLoader from "../../UI/DashBoardLoader";
+import { useNavigate } from "react-router";
 
 const CreateDonationPage = () => {
   const axiosSecure = useAxiosSecure();
@@ -13,6 +14,7 @@ const CreateDonationPage = () => {
   const [selectedDistrictId, setSelectedDistrictId] = useState("");
   const [upazilas, setUpazilas] = useState([]);
   const [status, isStatusLoading] = useStatus();
+  const navigate = useNavigate();
   useEffect(() => {
     document.title = "BloodBridge | Create Donation";
     window.scrollTo(0, 0);
@@ -94,9 +96,10 @@ const CreateDonationPage = () => {
 
       if (response.data.insertedId) {
         toast.success("Donation request created!");
-        // reset();
-        // setSelectedDistrictId("");
-        // setUpazilas([]);
+        reset();
+        setSelectedDistrictId("");
+        setUpazilas([]);
+        navigate("/dashboard/my-donation-request");
       } else {
         toast.error("Something went wrong. Please try again.");
       }
