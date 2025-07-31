@@ -3,10 +3,6 @@
 **BloodBridge** is a full-featured MERN-based blood donation platform designed to connect blood donors with recipients efficiently. It includes user roles, donation management, blog content tools, and funding features—all wrapped in a fully responsive, user-friendly experience.
 
 🌐 **Live Site:** [BloodBridge](https://bloodbridge-by-naimur.web.app/)  
-🛂 **Admin Login**
-
-- **Email:** `admin.naimur@gmail.com`
-- **Password:** `Admin@naimur11`
 
 ## 🧰 Tech Stack & Tools
 
